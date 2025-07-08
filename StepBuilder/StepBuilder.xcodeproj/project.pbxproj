@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		26CDD31A2E1C8C530046CDDD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 26CDD3192E1C8C530046CDDD /* SnapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		26CDD2AF2E1C69E10046CDDD /* StepBuilder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StepBuilder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26CDD31A2E1C8C530046CDDD /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = StepBuilder;
 			packageProductDependencies = (
+				26CDD3192E1C8C530046CDDD /* SnapKit */,
 			);
 			productName = StepBuilder;
 			productReference = 26CDD2AF2E1C69E10046CDDD /* StepBuilder.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 26CDD2A62E1C69E10046CDDD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				26CDD3182E1C8C530046CDDD /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 26CDD2B02E1C69E10046CDDD /* Products */;
 			projectDirPath = "";
@@ -143,9 +152,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = StepBuilder/StepBuilder.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8DGNFF8D7D;
+				DEVELOPMENT_TEAM = BT4J67MR3F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StepBuilder/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -158,7 +168,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jaymerutkoski.StepBuilder;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaymerutkoski.StepBuilders;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -171,9 +181,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = StepBuilder/StepBuilder.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8DGNFF8D7D;
+				DEVELOPMENT_TEAM = BT4J67MR3F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StepBuilder/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -186,7 +197,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jaymerutkoski.StepBuilder;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaymerutkoski.StepBuilders;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -335,6 +346,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		26CDD3182E1C8C530046CDDD /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		26CDD3192E1C8C530046CDDD /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 26CDD3182E1C8C530046CDDD /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 26CDD2A72E1C69E10046CDDD /* Project object */;
 }
