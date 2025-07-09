@@ -25,6 +25,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
     }
     private struct Keys {
         public static let installDate = "AppDefaults.Keys.installDate"
+        public static let shownOnboarding = "AppDefaults.Keys.shownOnboarding"
     }
     
     public var installDate: Date {
@@ -33,6 +34,15 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         }
         set {
             defaults.set(newValue.timeIntervalSince1970, forKey: Keys.installDate)
+        }
+    }
+    
+    public var shownOnboarding: Bool {
+        get {
+            return defaults.bool(forKey: Keys.shownOnboarding)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.shownOnboarding)
         }
     }
 }
