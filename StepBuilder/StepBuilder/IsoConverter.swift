@@ -7,18 +7,21 @@
 
 import Foundation
 
-func convertWorldToScreen(_ worldSpacePosition: Vector3D, direction: Rotation = .defaultRotation) -> Vector2D {
-    let xOffset = Vector2D(x: 16, y: 8)
-    let yOffset = Vector2D(x: -16, y: 8)
-    let zOffset = Vector2D(x: 0, y: 8)
+func convertWorldToScreen(_ worldSpacePosition: Vector3D, spriteSize: CGSize, direction: Rotation = .defaultRotation) -> Vector2D {
+    let xYValue = calculateXYPoint(width: spriteSize.width)
+    
+    let xOffset = Vector2D(x: xYValue.0, y: xYValue.1)
+    let yOffset = Vector2D(x: -xYValue.0, y: xYValue.1)
+    let zOffset = Vector2D(x: 0, y: xYValue.1)
     
     let rotatedWorldSpacePosition = rotateCoordinate(worldSpacePosition, direction: direction)
     
     return rotatedWorldSpacePosition.x * xOffset + rotatedWorldSpacePosition.y * yOffset + rotatedWorldSpacePosition.z * zOffset
 }
 
-func convertWorldToZPosition(_ worldSpacePosition: Vector3D, direction: Rotation = .defaultRotation) -> Int {
-    -convertWorldToScreen(worldSpacePosition, direction: direction).y + worldSpacePosition.z * 8 * 2
+func convertWorldToZPosition(_ worldSpacePosition: Vector3D, spriteSize: CGSize, direction: Rotation = .defaultRotation) -> Int {
+    let xYValue = calculateXYPoint(width: spriteSize.width)
+    return -convertWorldToScreen(worldSpacePosition, spriteSize: spriteSize, direction: direction).y + worldSpacePosition.z * xYValue.1 * 2
 }
 
 func rotateCoordinate(_ coord: Vector3D, direction: Rotation) -> Vector3D {
@@ -32,4 +35,11 @@ func rotateCoordinate(_ coord: Vector3D, direction: Rotation) -> Vector3D {
     case .degrees135:
         return Vector3D(x: -coord.y, y: coord.x, z: coord.z)
     }
+}
+
+func calculateXYPoint(width: CGFloat) -> (Int, Int) {
+    let xValue = Int(width / 2)
+    let yValue = Int(Float(xValue) * tan(Float((30 * (Double.pi / 180.0)))))
+    
+    return (xValue, yValue)
 }
