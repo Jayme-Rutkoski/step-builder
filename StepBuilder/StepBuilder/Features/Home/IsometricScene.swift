@@ -86,45 +86,50 @@ class IsometricScene: SKScene {
         for node in rootNode.children {
             node.removeFromParent()
         }
-        
-        /* let map = Map(heightMap: [
-         [1,1,1,1,1],
-         [1,1,1,1,1],
-         [1,1,1,1,1],
-         [1,1,1,1,1],
-         [1,1,1,1,1],
-         ])*/
+
         let map = Map(heightMap: [
-            [1,1],
-            [1,1],
+            [1,1,1,1,1],
+            [1,1,1,1,2],
+            [1,1,1,1,1],
+            [1,1,1,3,2],
+            [1,2,1,2,1],
         ])
         
         for y in 0 ..< map.rowCount {
             for x in 0 ..< map.colCount {
                 let elevation = map[Vector2D(x: x, y: y)]
-                
-                var sprite = SKSpriteNode(imageNamed: "soil_tile")
-
-                if (x == 1 && y == 1) {
-                    sprite = SKSpriteNode(imageNamed: "grass_tile")
+                print("ELEVATION: \(elevation)")
+                for z in 0 ... 1 {
+                    var spriteSize = CGSize(width: 60, height: 60)
+                    var sprite = SKSpriteNode(imageNamed: "soil_tile")
+                    
+                    if (z == 1) {
+                        if (elevation == 1) {
+                            continue
+                        } else if (elevation == 2) {
+                            sprite = SKSpriteNode(imageNamed: "seedling_tile")
+                        } else if (elevation == 3) {
+                            spriteSize = CGSize(width: 60, height: 120)
+                            sprite = SKSpriteNode(imageNamed: "tree_tile")
+                        }
+                    }
+                    sprite.texture?.filteringMode = .nearest
+                    let position = Vector3D(x: x, y: y, z: z)
+                    
+                    print(position)
+                    
+                    let color = SKColor.white
+                    let screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: rotation)
+                    sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
+                    sprite.size = spriteSize
+                    sprite.zPosition = CGFloat(convertWorldToZPosition(position, spriteSize: spriteSize, direction: rotation))
+                    
+                    sprite.colorBlendFactor = 1.0
+                    sprite.color = color
+                    
+                    sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
+                    rootNode.addChild(sprite)
                 }
-                sprite.texture?.filteringMode = .nearest
-                let position = Vector3D(x: x, y: y, z: 0)
-                
-                print(position)
-                let spriteSize = CGSize(width: 180, height: 180)
-                let color = SKColor.white
-                let screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: rotation)
-                sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
-                sprite.size = spriteSize
-                sprite.zPosition = CGFloat(convertWorldToZPosition(position, spriteSize: spriteSize, direction: rotation))
-                //sprite.zPosition = 0
-                
-                sprite.colorBlendFactor = 1.0
-                sprite.color = color
-                
-                sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
-                rootNode.addChild(sprite)
                 
                 /*for z in 0 ... elevation {
                  var sprite = SKSpriteNode(imageNamed: "soil_tile")

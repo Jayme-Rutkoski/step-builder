@@ -39,7 +39,7 @@ func rotateCoordinate(_ coord: Vector3D, direction: Rotation) -> Vector3D {
 
 func calculateXYPoint(width: CGFloat) -> (Int, Int) {
     let xValue = Int(width / 2)
-    let yValue = Int(Float(xValue) * tan(Float((30 * (Double.pi / 180.0)))))
+    let yValue = Int((Float(xValue) * tan(Float((30 * (Double.pi / 180.0))))).rounded(.up))
     
     return (xValue, yValue)
 }
