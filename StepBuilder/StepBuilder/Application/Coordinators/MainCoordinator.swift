@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
 
 class MainCoordinator {
     
@@ -16,8 +17,22 @@ class MainCoordinator {
     
     public func start() {
         RootViewController.shared.update(to: SplashViewController())
-        
-        continueToApp()
+        Factory.shared().stepProgressManager.initializeAndLoadProgress {
+            if (SwiftAppDefaults.shared.userId == nil || SwiftAppDefaults.shared.userId?.isEmpty == true) {
+                Task {
+                    do {
+                        let auth = Auth.auth()
+                        _ = try await auth.signInAnonymously()
+                        SwiftAppDefaults.shared.userId = auth.currentUser?.uid
+                        self.continueToApp()
+                    } catch {
+                        print("Error signing in anonymously: \(error.localizedDescription)")
+                    }
+                }
+            } else {
+                self.continueToApp()
+            }
+        }
     }
     
     func continueToApp() {

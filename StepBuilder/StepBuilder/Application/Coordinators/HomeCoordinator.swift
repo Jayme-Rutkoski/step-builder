@@ -24,7 +24,7 @@ class HomeCoordinator {
     
     public func getViewController() -> UIViewController {
         let vc = HomeViewController()
-        vc.setScene(scene: IsometricScene())
+        vc.setScene()
         
         return vc
     }

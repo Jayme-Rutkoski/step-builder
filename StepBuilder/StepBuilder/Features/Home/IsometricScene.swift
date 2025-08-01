@@ -61,6 +61,7 @@ class IsometricScene: SKScene {
     var rotation = Rotation.defaultRotation
     let rootNode = SKNode()
     let fxRootNode = SKNode()
+    var isLoaded = false
     
     func restartScene() {
         self.removeAllChildren()
@@ -75,88 +76,96 @@ class IsometricScene: SKScene {
         
         rootNode.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         addChild(rootNode)
-        //addChild(fxRootNode)
-        
-        redraw()
     }
     
-    func redraw() {
+    public func load(date: Date) {
+        redraw(date: date)
+    }
+    
+    func redraw(date: Date) {
         print("REDRAW")
-        // cleanup old nodes
-        for node in rootNode.children {
-            node.removeFromParent()
-        }
-
-        let map = Map(heightMap: [
-            [1,1,1,1,1],
-            [1,1,1,1,2],
-            [1,1,1,1,1],
-            [1,1,1,3,2],
-            [1,2,1,2,1],
-        ])
         
-        for y in 0 ..< map.rowCount {
-            for x in 0 ..< map.colCount {
-                let elevation = map[Vector2D(x: x, y: y)]
-                print("ELEVATION: \(elevation)")
-                for z in 0 ... 1 {
-                    var spriteSize = CGSize(width: 60, height: 60)
-                    var sprite = SKSpriteNode(imageNamed: "soil_tile")
+        let changeContent = SKAction.run {
+            if (!self.isLoaded) {
+                self.rootNode.removeAllChildren()
+            }
+            
+            for node in self.rootNode.children {
+                if (node.name != "soil") {
+                    let growDown = SKAction.scaleY(to: 0.0, duration: 0.5)
+                    let remove = SKAction.removeFromParent()
+                    let growDownAndRemove = SKAction.sequence([growDown, remove])
+                    node.run(growDownAndRemove)
+                }
+            }
+            
+            Task.init {
+                var mapData = await Factory.shared().stepProgressManager.getGridForDate(date)
+                if (mapData == nil && Date().isSameDay(as: date)) {
+                    mapData = Factory.shared().stepProgressManager.getCurrentGrid()
+                } else if (mapData == nil) {
+                    mapData = Factory.shared().stepProgressManager.createGrid(rows: 5, cols: 5, initialValue: 1)
+                }
+                DispatchQueue.main.async {
+                    let map = Map(heightMap: mapData!)
                     
-                    if (z == 1) {
-                        if (elevation == 1) {
-                            continue
-                        } else if (elevation == 2) {
-                            sprite = SKSpriteNode(imageNamed: "seedling_tile")
-                        } else if (elevation == 3) {
-                            spriteSize = CGSize(width: 60, height: 120)
-                            sprite = SKSpriteNode(imageNamed: "tree_tile")
+                    for y in 0 ..< map.rowCount {
+                        for x in 0 ..< map.colCount {
+                            let elevation = map[Vector2D(x: x, y: y)]
+                            print("ELEVATION: \(elevation)")
+                            for z in 0 ... 1 {
+                                let spriteSize = CGSize(width: 60, height: 60)
+                                var sprite = SKSpriteNode(imageNamed: "soil_tile")
+                                sprite.name = "soil"
+                                
+                                if (z == 0 && self.isLoaded) {
+                                    continue
+                                }
+                                
+                                if (z == 1) {
+                                    if (elevation == 1) {
+                                        continue
+                                    } else if (elevation == 2) {
+                                        sprite = SKSpriteNode(imageNamed: "seedling_tile")
+                                        sprite.name = "seedling"
+                                        sprite.yScale = 0.0
+                                        sprite.xScale = 1.0
+                                    } else if (elevation == 3) {
+                                        sprite = SKSpriteNode(imageNamed: "tree_tile")
+                                        sprite.name = "tree"
+                                        sprite.yScale = 0.0
+                                        sprite.xScale = 1.0
+                                    }
+                                }
+                                sprite.texture?.filteringMode = .nearest
+                                let position = Vector3D(x: x, y: y, z: z)
+                                
+                                print(position)
+                                
+                                let color = SKColor.white
+                                let screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: self.rotation)
+                                sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
+                                sprite.size = spriteSize
+                                sprite.zPosition = CGFloat(convertWorldToZPosition(position, spriteSize: spriteSize, direction: self.rotation))
+                                
+                                sprite.colorBlendFactor = 1.0
+                                sprite.color = color
+                                
+                                sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
+                                self.rootNode.addChild(sprite)
+                                
+                                if (sprite.name == "seedling" || sprite.name == "tree") {
+                                    let growAction = SKAction.scaleY(to: 1.0, duration: 0.5)
+                                    sprite.run(growAction)
+                                }
+                            }
                         }
                     }
-                    sprite.texture?.filteringMode = .nearest
-                    let position = Vector3D(x: x, y: y, z: z)
-                    
-                    print(position)
-                    
-                    let color = SKColor.white
-                    let screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: rotation)
-                    sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
-                    sprite.size = spriteSize
-                    sprite.zPosition = CGFloat(convertWorldToZPosition(position, spriteSize: spriteSize, direction: rotation))
-                    
-                    sprite.colorBlendFactor = 1.0
-                    sprite.color = color
-                    
-                    sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
-                    rootNode.addChild(sprite)
+                    self.isLoaded = true
                 }
-                
-                /*for z in 0 ... elevation {
-                 var sprite = SKSpriteNode(imageNamed: "soil_tile")
-                 if (x == 1 && y == 1) {
-                 print("GRASS")
-                 sprite = SKSpriteNode(imageNamed: "grass_tile")
-                 } else {
-                 sprite = SKSpriteNode(imageNamed: "soil_tile")
-                 }
-                 sprite.texture?.filteringMode = .nearest
-                 let position = Vector3D(x: x, y: y, z: z)
-                 
-                 print(position)
-                 let color = SKColor.white
-                 let screenPosition = convertWorldToScreen(position, direction: rotation)
-                 sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
-                 //sprite.zPosition = CGFloat(convertWorldToZPosition(position, direction: rotation))
-                 
-                 
-                 sprite.colorBlendFactor = 1.0
-                 sprite.color = color
-                 
-                 sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
-                 rootNode.addChild(sprite)
-                 }
-                 }*/
             }
         }
+        let sequence = SKAction.sequence([changeContent])
+        self.rootNode.run(sequence)
     }
 }
