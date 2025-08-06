@@ -25,6 +25,9 @@ class HomeCoordinator {
     public func getViewController() -> UIViewController {
         let vc = HomeViewController()
         vc.setScene()
+        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: CurrencyView(frame: .zero))
+        
+        DailyRewardView().displayView(vc)
         
         return vc
     }

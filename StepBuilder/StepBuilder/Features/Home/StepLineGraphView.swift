@@ -147,7 +147,7 @@ class StepLineGraphView: UIView {
     /// Draws labels for the axes.
     private func drawLabels(maxSteps: CGFloat, graphRect: CGRect) {
         let textAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 10),
+            .font: FontHelper.getFont(size: 10),
             .foregroundColor: UIColor.darkGray
         ]
 

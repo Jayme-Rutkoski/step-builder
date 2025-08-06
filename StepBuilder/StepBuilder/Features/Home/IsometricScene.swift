@@ -74,15 +74,15 @@ class IsometricScene: SKScene {
         size = view.frame.size
         scaleMode = .aspectFill
         
-        rootNode.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+        rootNode.position = CGPoint(x: self.frame.width / 2, y: (self.frame.height / 2) - ((self.frame.height / 2) / 2))
         addChild(rootNode)
     }
     
-    public func load(date: Date) {
-        redraw(date: date)
+    public func load(date: Date, completion: ((Bool) -> ())? = nil) {
+        redraw(date: date, completion: completion)
     }
     
-    func redraw(date: Date) {
+    func redraw(date: Date, completion: ((Bool) -> ())?) {
         print("REDRAW")
         
         let changeContent = SKAction.run {
@@ -100,10 +100,13 @@ class IsometricScene: SKScene {
             }
             
             Task.init {
+                var hasData = true
+                
                 var mapData = await Factory.shared().stepProgressManager.getGridForDate(date)
                 if (mapData == nil && Date().isSameDay(as: date)) {
                     mapData = Factory.shared().stepProgressManager.getCurrentGrid()
                 } else if (mapData == nil) {
+                    hasData = false
                     mapData = Factory.shared().stepProgressManager.createGrid(rows: 5, cols: 5, initialValue: 1)
                 }
                 DispatchQueue.main.async {
@@ -162,6 +165,7 @@ class IsometricScene: SKScene {
                         }
                     }
                     self.isLoaded = true
+                    completion?(hasData)
                 }
             }
         }

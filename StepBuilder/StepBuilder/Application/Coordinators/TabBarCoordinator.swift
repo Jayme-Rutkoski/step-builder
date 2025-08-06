@@ -23,6 +23,7 @@ final public class TabBarCoordinator {
         tabBarController.delegate = self.tabBarDelegate
 
         let homeNC = UINavigationController(rootViewController: HomeCoordinator(viewController: tabBarController).getViewController())
+
         homeNC.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home_unselected")?.withRenderingMode(.alwaysTemplate), selectedImage: UIImage(named: "home_selected")?.withRenderingMode(.alwaysTemplate))
 
         tabBarController.viewControllers = [

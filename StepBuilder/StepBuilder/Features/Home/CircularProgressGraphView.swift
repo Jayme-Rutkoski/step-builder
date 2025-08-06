@@ -48,7 +48,7 @@ class CircularProgressGraphView: UIView {
         }
     }
 
-    var labelFont: UIFont = UIFont.systemFont(ofSize: 40, weight: .bold) {
+    var labelFont: UIFont = FontHelper.getBoldFont(size: 40) {
         didSet {
             progressLabel.font = labelFont
             // Re-layout label if font size changes

@@ -26,14 +26,14 @@ class HomeViewController: UIViewController {
     }()
     private var labelSteps: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        label.font = FontHelper.getBoldFont(size: 28)
         label.textColor = .black
         
         return label
     }()
     private lazy var labelStepsGoal: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        label.font = FontHelper.getBoldFont(size: 14)
         label.textColor = .black
         label.text = "of \(Int(self.stepGoal).withCommas()) steps"
         
@@ -51,11 +51,40 @@ class HomeViewController: UIViewController {
         return view
     }()
     
-    private var circleGraphView: CircularProgressGraphView = {
-        let graphView = CircularProgressGraphView(frame: .zero)
+    private lazy var viewNoData: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .black
+        view.layer.opacity = 0.8
         
-        return graphView
+        return view
     }()
+    
+    private lazy var labelNoData: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.text = "No Data Available"
+        label.textColor = .white
+        label.font = FontHelper.getBoldFont(size: 16)
+        
+        return label
+    }()
+    
+    private lazy var leftImageView: UIImageView = {
+        let imageView = UIImageView(frame: .zero)
+        imageView.image = UIImage(named: "left_arrow")
+        imageView.contentMode = .scaleAspectFit
+        
+        return imageView
+    }()
+    
+    private lazy var rightImageView: UIImageView = {
+        let imageView = UIImageView(frame: .zero)
+        imageView.image = UIImage(named: "right_arrow")
+        imageView.contentMode = .scaleAspectFit
+        imageView.isHidden = true
+        
+        return imageView
+    }()
+    
     private var lineGraphView: StepLineGraphView = {
         let graphView = StepLineGraphView(frame: .zero)
         graphView.lineColor = UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1.0)
@@ -114,20 +143,47 @@ class HomeViewController: UIViewController {
     func setup() {
         self.view.addSubview(self.scrollView)
         self.scrollView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(16)
-            make.left.equalTo(self.view.snp.left).offset(5)
-            make.right.equalTo(self.view.snp.right).offset(-5)
-            //make.bottom.equalTo(self.view.snp.centerY).offset(-16)
-            make.height.equalTo(300)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.left.equalTo(self.view.snp.left)
+            make.right.equalTo(self.view.snp.right)
+            make.height.equalTo(350)
+        }
+        
+        self.scrollView.addSubview(self.leftImageView)
+        self.leftImageView.snp.makeConstraints { make in
+            make.centerY.equalTo(self.scrollView.snp.centerY)
+            make.left.equalTo(self.view.snp.left).offset(10)
+            make.height.equalTo(20)
+            make.width.equalTo(20)
+        }
+        
+        self.scrollView.addSubview(self.rightImageView)
+        self.rightImageView.snp.makeConstraints { make in
+            make.centerY.equalTo(self.scrollView.snp.centerY)
+            make.right.equalTo(self.view.snp.right).offset(-10)
+            make.height.equalTo(20)
+            make.width.equalTo(20)
         }
         
         self.view.addSubview(skView)
         skView.snp.makeConstraints { make in
-            make.top.equalTo(self.scrollView.snp.bottom)
+            make.top.equalTo(self.scrollView.snp.bottom).offset(16)
             make.left.equalTo(self.view.snp.left)
             make.right.equalTo(self.view.snp.right)
-            make.bottom.equalTo(self.view.snp.bottom)
+            make.bottom.equalTo(self.view.snp.bottomMargin)
         }
+        
+        self.skView.addSubview(self.viewNoData)
+        self.viewNoData.snp.makeConstraints { make in
+            make.edges.equalTo(self.skView.snp.edges)
+        }
+        
+        self.viewNoData.addSubview(self.labelNoData)
+        self.labelNoData.snp.makeConstraints { make in
+            make.center.equalTo(self.skView.snp.center)
+        }
+        
+        self.viewNoData.isHidden = true
         
         self.authorizeHealthKit()
         
@@ -176,15 +232,24 @@ class HomeViewController: UIViewController {
                 stackView.alignment = .center
                 stackView.spacing = 5
                 
+                print("OFFSET: \(data.offset)")
+                let offset = data.offset - 6
+                let dateLabel = UILabel(frame: .zero)
+                dateLabel.font = FontHelper.getBoldFont(size: 24)
+                dateLabel.textColor = .black
+                dateLabel.text = offset == 0 ? "Today" : Date().getPastDate(byDays: abs(offset))?.formatted(.dateTime.month(.abbreviated).day()) ?? ""
+                
+                stackView.addArrangedSubview(dateLabel)
+                
                 let titleLabel = UILabel(frame: .zero)
-                titleLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+                titleLabel.font = FontHelper.getBoldFont(size: 28)
                 titleLabel.textColor = .black
                 titleLabel.text = Int(steps).withCommas()
                 
                 stackView.addArrangedSubview(titleLabel)
                 
                 let subtitleLabel = UILabel(frame: .zero)
-                subtitleLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+                subtitleLabel.font = FontHelper.getBoldFont(size: 14)
                 subtitleLabel.textColor = .black
                 subtitleLabel.text = "of \(Int(self.stepGoal).withCommas()) steps"
                 
@@ -233,7 +298,9 @@ class HomeViewController: UIViewController {
             
             Task {
                 await Factory.shared().stepProgressManager.addSteps(steps: Int(dailySteps.last ?? 0))
-                self.scene?.load(date: .now)
+                self.scene?.load(date: .now) { hasData in
+                    self.viewNoData.isHidden = hasData
+                }
             }
         }
     }
@@ -250,7 +317,12 @@ extension HomeViewController: UIScrollViewDelegate {
         let index = round(scrollView.contentOffset.x / scrollView.frame.width)
         if (!index.isNaN) {
             self.pageIndex = index
-            self.scene?.load(date: Date().getPastDate(byDays: abs((Int(self.pageIndex) - 6))) ?? Date())
+            self.scene?.load(date: Date().getPastDate(byDays: abs((Int(self.pageIndex) - 6))) ?? Date()) { hasData in
+                self.viewNoData.isHidden = hasData
+            }
+            
+            self.leftImageView.isHidden = self.pageIndex <= 0
+            self.rightImageView.isHidden = self.pageIndex >= 6
         }
     }
 }

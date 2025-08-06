@@ -27,6 +27,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let installDate = "AppDefaults.Keys.installDate"
         public static let shownOnboarding = "AppDefaults.Keys.shownOnboarding"
         public static let userId = "AppDefaults.Keys.userId"
+        public static let coins = "AppDefaults.Keys.coins"
     }
     
     public var installDate: Date {
@@ -52,6 +53,14 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
             return defaults.string(forKey: Keys.userId)
         } set {
             defaults.safe(set: newValue, forKey: Keys.userId)
+        }
+    }
+    
+    public var coins: Int {
+        get {
+            return defaults.integer(forKey: Keys.coins)
+        } set {
+            defaults.set(newValue, forKey: Keys.coins)
         }
     }
 }

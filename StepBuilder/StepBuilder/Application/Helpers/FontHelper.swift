@@ -28,4 +28,13 @@ class FontHelper {
     static func getBoldItalicFont(size: CGFloat) -> UIFont {
         return UIFont(name: "Palatino-Bold-Italic", size: size) ?? getBaseBoldFont(size: size)
     }
+    
+    static func getSFCompactRoundedBoldFont(size: CGFloat) -> UIFont {
+        return UIFont(name: "SFCompactRounded-Bold", size: size) ?? getBaseBoldFont(size: size)
+    }
+    
+    static func getSignPainterSemiBoldFont(size: CGFloat) -> UIFont {
+        return UIFont(name: "Arial-Black", size: size) ?? getBaseBoldFont(size: size)
+        //return UIFont(name: "SignPainter-HouseScriptSemiBold", size: size) ?? getBaseBoldFont(size: size)
+    }
 }

@@ -12,6 +12,7 @@
 		2696994C2E3195C5008ADF1F /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 2696994B2E3195C5008ADF1F /* FirebaseCrashlytics */; };
 		2696994E2E3195C5008ADF1F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 2696994D2E3195C5008ADF1F /* FirebaseFirestore */; };
 		269699512E319687008ADF1F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 269699502E319687008ADF1F /* FirebaseCore */; };
+		26A1A4EB2E43DBAD0003B38E /* UICountingLabel in Frameworks */ = {isa = PBXBuildFile; productRef = 26A1A4EA2E43DBAD0003B38E /* UICountingLabel */; };
 		26CDD31A2E1C8C530046CDDD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 26CDD3192E1C8C530046CDDD /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +50,7 @@
 				2696994C2E3195C5008ADF1F /* FirebaseCrashlytics in Frameworks */,
 				2696994A2E3195C5008ADF1F /* FirebaseAuth in Frameworks */,
 				2696994E2E3195C5008ADF1F /* FirebaseFirestore in Frameworks */,
+				26A1A4EB2E43DBAD0003B38E /* UICountingLabel in Frameworks */,
 				269699512E319687008ADF1F /* FirebaseCore in Frameworks */,
 				26CDD31A2E1C8C530046CDDD /* SnapKit in Frameworks */,
 			);
@@ -107,6 +109,7 @@
 				2696994B2E3195C5008ADF1F /* FirebaseCrashlytics */,
 				2696994D2E3195C5008ADF1F /* FirebaseFirestore */,
 				269699502E319687008ADF1F /* FirebaseCore */,
+				26A1A4EA2E43DBAD0003B38E /* UICountingLabel */,
 			);
 			productName = StepBuilder;
 			productReference = 26CDD2AF2E1C69E10046CDDD /* StepBuilder.app */;
@@ -139,6 +142,7 @@
 			packageReferences = (
 				26CDD3182E1C8C530046CDDD /* XCRemoteSwiftPackageReference "SnapKit" */,
 				269699462E3195C5008ADF1F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				26A1A4E92E43DBAD0003B38E /* XCRemoteSwiftPackageReference "WayUICountingLabel" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 26CDD2B02E1C69E10046CDDD /* Products */;
@@ -182,6 +186,8 @@
 				DEVELOPMENT_TEAM = BT4J67MR3F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StepBuilder/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Required to retrieve the step count.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Required to retrieve the step count.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -211,6 +217,8 @@
 				DEVELOPMENT_TEAM = BT4J67MR3F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StepBuilder/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Required to retrieve the step count.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Required to retrieve the step count.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -380,6 +388,14 @@
 				minimumVersion = 12.0.0;
 			};
 		};
+		26A1A4E92E43DBAD0003B38E /* XCRemoteSwiftPackageReference "WayUICountingLabel" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/satishway/WayUICountingLabel.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		26CDD3182E1C8C530046CDDD /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -415,6 +431,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 269699462E3195C5008ADF1F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		26A1A4EA2E43DBAD0003B38E /* UICountingLabel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 26A1A4E92E43DBAD0003B38E /* XCRemoteSwiftPackageReference "WayUICountingLabel" */;
+			productName = UICountingLabel;
 		};
 		26CDD3192E1C8C530046CDDD /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
