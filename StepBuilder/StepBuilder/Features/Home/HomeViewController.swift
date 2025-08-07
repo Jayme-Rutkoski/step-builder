@@ -15,6 +15,25 @@ class HomeViewController: UIViewController {
     private let healthStore = HKHealthStore()
     private let stepGoal: CGFloat = 10000.0
     private var pageIndex: CGFloat = 0.0
+    private var isModalDisplayed: Bool = false
+    private var modalQueue: [(() -> ())] = []
+    
+    private lazy var progressView: UIProgressView = {
+        let progressView = UIProgressView(progressViewStyle: .bar)
+        progressView.backgroundColor = UIColor(hex: 0xcc99cc)
+        progressView.tintColor = UIColor(hex: 0x800080)
+        
+        return progressView
+    }()
+    
+    private lazy var labelProgressToGo: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = FontHelper.getBoldFont(size: 14)
+        label.textColor = .black
+        label.textAlignment = .center
+        
+        return label
+    }()
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView(frame: .zero)
@@ -84,19 +103,7 @@ class HomeViewController: UIViewController {
         
         return imageView
     }()
-    
-    private var lineGraphView: StepLineGraphView = {
-        let graphView = StepLineGraphView(frame: .zero)
-        graphView.lineColor = UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1.0)
-        graphView.fillColor = UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 0.2)
-        graphView.lineWidth = 3.0
-        graphView.translatesAutoresizingMaskIntoConstraints = false
-        graphView.stepData = [
-            7500, 8200, 6800, 9500, 7000, 10500, 9000
-        ]
-        
-        return graphView
-    }()
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -107,8 +114,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(monsterFound), name: .MonsterFound, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(detectedForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         self.view.backgroundColor = .white
         
@@ -118,6 +126,19 @@ class HomeViewController: UIViewController {
         }
         
         self.setup()
+        
+        print("YYY Showing Daily Reward")
+        self.queueUpNextModal {
+            DailyRewardView().displayView(self) {
+                self.modalDismissed()
+            }
+        }
+        
+        if (SwiftAppDefaults.shared.monstersFound.count > 0) {
+            for monsterNumber in SwiftAppDefaults.shared.monstersFound {
+                self.displayMonsterFound(monsterNumber)
+            }
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -141,15 +162,28 @@ class HomeViewController: UIViewController {
     }
     
     func setup() {
+        self.view.addSubview(self.progressView)
+        self.progressView.snp.makeConstraints { make in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.left.equalTo(self.view.snp.left)
+            make.right.equalTo(self.view.snp.right)
+            make.height.equalTo(7)
+        }
+        self.view.addSubview(self.labelProgressToGo)
+        self.labelProgressToGo.snp.makeConstraints { make in
+            make.top.equalTo(self.progressView.snp.bottom).offset(2)
+            make.centerX.equalTo(self.progressView.snp.centerX)
+        }
+        
         self.view.addSubview(self.scrollView)
         self.scrollView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(self.labelProgressToGo.snp.bottom)
             make.left.equalTo(self.view.snp.left)
             make.right.equalTo(self.view.snp.right)
             make.height.equalTo(350)
         }
         
-        self.scrollView.addSubview(self.leftImageView)
+        self.view.addSubview(self.leftImageView)
         self.leftImageView.snp.makeConstraints { make in
             make.centerY.equalTo(self.scrollView.snp.centerY)
             make.left.equalTo(self.view.snp.left).offset(10)
@@ -157,7 +191,7 @@ class HomeViewController: UIViewController {
             make.width.equalTo(20)
         }
         
-        self.scrollView.addSubview(self.rightImageView)
+        self.view.addSubview(self.rightImageView)
         self.rightImageView.snp.makeConstraints { make in
             make.centerY.equalTo(self.scrollView.snp.centerY)
             make.right.equalTo(self.view.snp.right).offset(-10)
@@ -210,6 +244,10 @@ class HomeViewController: UIViewController {
     
     
     func calculateSteps() {
+        self.scrollView.subviews.forEach { $0.removeFromSuperview() }
+        self.rightImageView.isHidden = true
+        self.leftImageView.isHidden = false
+        
         HealthHelper.fetchDailyStepCounts(forLast: 7) { dailySteps in
             let containerView = UIView(frame: .zero)
             containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -232,6 +270,11 @@ class HomeViewController: UIViewController {
                 stackView.alignment = .center
                 stackView.spacing = 5
                 
+                let customStackView = UIStackView(frame: .zero)
+                customStackView.axis = .vertical
+                customStackView.alignment = .center
+                customStackView.spacing = 5
+                
                 print("OFFSET: \(data.offset)")
                 let offset = data.offset - 6
                 let dateLabel = UILabel(frame: .zero)
@@ -239,23 +282,23 @@ class HomeViewController: UIViewController {
                 dateLabel.textColor = .black
                 dateLabel.text = offset == 0 ? "Today" : Date().getPastDate(byDays: abs(offset))?.formatted(.dateTime.month(.abbreviated).day()) ?? ""
                 
-                stackView.addArrangedSubview(dateLabel)
+                customStackView.addArrangedSubview(dateLabel)
                 
                 let titleLabel = UILabel(frame: .zero)
                 titleLabel.font = FontHelper.getBoldFont(size: 28)
                 titleLabel.textColor = .black
                 titleLabel.text = Int(steps).withCommas()
                 
-                stackView.addArrangedSubview(titleLabel)
+                customStackView.addArrangedSubview(titleLabel)
                 
                 let subtitleLabel = UILabel(frame: .zero)
                 subtitleLabel.font = FontHelper.getBoldFont(size: 14)
                 subtitleLabel.textColor = .black
                 subtitleLabel.text = "of \(Int(self.stepGoal).withCommas()) steps"
                 
-                stackView.addArrangedSubview(subtitleLabel)
+                customStackView.addArrangedSubview(subtitleLabel)
                 
-                let progressView = CircularProgressGraphView(frame: .zero)
+                let progressView = CircularProgressGraphView(customView: customStackView)
                 progressView.progress = CGFloat(steps) / self.stepGoal
                 stackView.addArrangedSubview(progressView)
                 containerView.addSubview(stackView)
@@ -295,12 +338,55 @@ class HomeViewController: UIViewController {
                 let xOffset = self.scrollView.frame.width * CGFloat(6)
                 self.scrollView.setContentOffset(CGPoint(x: xOffset, y: 0), animated: false)
             }
-            
+
             Task {
                 await Factory.shared().stepProgressManager.addSteps(steps: Int(dailySteps.last ?? 0))
+                let stepsLeft = Int(dailySteps.last ?? 0) % 500
+                self.progressView.progress = Float(CGFloat(stepsLeft) / 500)
+                self.labelProgressToGo.text = "Next tile search in \(stepsLeft) steps."
                 self.scene?.load(date: .now) { hasData in
                     self.viewNoData.isHidden = hasData
                 }
+            }
+        }
+    }
+    
+    private func displayMonsterFound(_ monsterNumber: Int) {
+        SwiftAppDefaults.removeMonster(monsterNumber)
+        DispatchQueue.main.async {
+            self.queueUpNextModal {
+                MonsterFoundView().displayView(self, monsterNumber: monsterNumber) {
+                    self.modalDismissed()
+                }
+            }
+        }
+    }
+    
+    @objc private func monsterFound(notification: Notification) {
+        if let monsterNum = notification.object as? Int {
+            self.displayMonsterFound(monsterNum)
+        }
+    }
+    
+    @objc private func detectedForeground(notification: Notification) {
+        calculateSteps()
+    }
+    
+    private func modalDismissed() {
+        self.isModalDisplayed = false
+        self.queueUpNextModal()
+    }
+    
+    private func queueUpNextModal(nextQueue: (() -> ())? = nil) {
+        if let nextQueue = nextQueue {
+            self.modalQueue.append(nextQueue)
+        }
+        
+        if !self.modalQueue.isEmpty && !self.isModalDisplayed {
+            self.isModalDisplayed = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.modalQueue[0]()
+                self.modalQueue.removeFirst()
             }
         }
     }

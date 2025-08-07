@@ -13,6 +13,7 @@ class CircularProgressGraphView: UIView {
     private let progressLayer = CAShapeLayer()
     private let trackLayer = CAShapeLayer()
     private let progressLabel = UILabel()
+    private var customView = UIView()
 
     // Public property to set the progress (0.0 to 1.0)
     var progress: CGFloat = 0.0 {
@@ -64,6 +65,12 @@ class CircularProgressGraphView: UIView {
 
     // MARK: - Initialization
 
+    init(customView: UIView) {
+        super.init(frame: .zero)
+        setupLayers()
+        setupView(view: customView)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayers()
@@ -100,7 +107,7 @@ class CircularProgressGraphView: UIView {
 
         // Update the label's frame to be centered
         progressLabel.sizeToFit() // Adjust label size to fit its content
-        progressLabel.center = center // Center the label
+        customView.center = center // Center the label
     }
 
     // MARK: - Setup Methods
@@ -127,13 +134,17 @@ class CircularProgressGraphView: UIView {
         progressLabel.textAlignment = .center
         progressLabel.font = labelFont
         progressLabel.textColor = labelTextColor
-        progressLabel.translatesAutoresizingMaskIntoConstraints = false // Use Auto Layout for positioning
-        addSubview(progressLabel)
+        self.customView = progressLabel
+        setupView(view: progressLabel)
+    }
+    private func setupView(view: UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false // Use Auto Layout for positioning
+        addSubview(view)
 
         // Center the label using Auto Layout constraints
         NSLayoutConstraint.activate([
-            progressLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            progressLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+            view.centerXAnchor.constraint(equalTo: centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
 

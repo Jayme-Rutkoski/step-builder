@@ -10,53 +10,6 @@ import UIKit
 import SnapKit
 
 class IsometricScene: SKScene {
-    /*let numRows = 5
-     let numCols = 5
-     let grassTexture = SKTexture(imageNamed: "grass_tile")
-     let tileSize = CGSize(width: 60, height: 30)
-     
-     lazy var grassTileDefinition: SKTileDefinition = {
-     let tileDefinition = SKTileDefinition(texture: self.grassTexture, size: self.tileSize)
-     tileDefinition.name = "grass"
-     return tileDefinition
-     }()
-     
-     lazy var grassTileGroup: SKTileGroup = {
-     let tileGroup = SKTileGroup(tileDefinition: self.grassTileDefinition)
-     tileGroup.name = "grassGroup"
-     return tileGroup
-     }()
-     
-     lazy var tileGroup: SKTileSet = {
-     let tileSet = SKTileSet(tileGroups: [self.grassTileGroup])
-     tileSet.type = .isometric
-     
-     return tileSet
-     }()
-     
-     lazy var isometricTileMap: SKTileMapNode = {
-     let tileMap = SKTileMapNode(tileSet: self.tileGroup, columns: self.numCols, rows: self.numRows, tileSize: self.tileSize)
-     tileMap.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
-     tileMap.fill(with: self.grassTileGroup)
-     tileMap.zPosition = -1
-     tileMap.enableAutomapping = true
-     
-     return tileMap
-     }()
-     
-     func restartScene() {
-     self.removeAllChildren()
-     self.removeAllActions()
-     }
-     
-     func createScene() {
-     self.restartScene()
-     self.backgroundColor = .blue
-     addChild(self.isometricTileMap)
-     }
-     override func didMove(to view: SKView) {
-     self.createScene()
-     }*/
     
     var rotation = Rotation.defaultRotation
     let rootNode = SKNode()
@@ -102,7 +55,7 @@ class IsometricScene: SKScene {
             Task.init {
                 var hasData = true
                 
-                var mapData = await Factory.shared().stepProgressManager.getGridForDate(date)
+                var mapData = Date().isSameDay(as: date) ? nil : await Factory.shared().stepProgressManager.getGridForDate(date)
                 if (mapData == nil && Date().isSameDay(as: date)) {
                     mapData = Factory.shared().stepProgressManager.getCurrentGrid()
                 } else if (mapData == nil) {
@@ -120,6 +73,7 @@ class IsometricScene: SKScene {
                                 let spriteSize = CGSize(width: 60, height: 60)
                                 var sprite = SKSpriteNode(imageNamed: "soil_tile")
                                 sprite.name = "soil"
+                                var notFound = false
                                 
                                 if (z == 0 && self.isLoaded) {
                                     continue
@@ -128,14 +82,30 @@ class IsometricScene: SKScene {
                                 if (z == 1) {
                                     if (elevation == 1) {
                                         continue
-                                    } else if (elevation == 2) {
+                                    } /*else if (elevation == 2) {
                                         sprite = SKSpriteNode(imageNamed: "seedling_tile")
                                         sprite.name = "seedling"
                                         sprite.yScale = 0.0
                                         sprite.xScale = 1.0
                                     } else if (elevation == 3) {
-                                        sprite = SKSpriteNode(imageNamed: "tree_tile")
+                                        let monsterNum = MonsterHelper.calculateNewFind()
+                                        let monsterImageName = "99999"
+                                        notFound = true
+                                        sprite = SKSpriteNode(imageNamed: monsterImageName)
                                         sprite.name = "tree"
+                                        sprite.yScale = 0.0
+                                        sprite.xScale = 1.0
+                                       }*/
+                                    else if (elevation == 99999) {
+                                        notFound = true
+                                        print("NOT FOUND")
+                                        sprite = SKSpriteNode(imageNamed: "\(elevation)")
+                                        sprite.name = "monster"
+                                        sprite.yScale = 0.0
+                                        sprite.xScale = 1.0
+                                    } else if (elevation > 2) {
+                                        sprite = SKSpriteNode(imageNamed: "\(elevation)")
+                                        sprite.name = "monster"
                                         sprite.yScale = 0.0
                                         sprite.xScale = 1.0
                                     }
@@ -146,7 +116,10 @@ class IsometricScene: SKScene {
                                 print(position)
                                 
                                 let color = SKColor.white
-                                let screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: self.rotation)
+                                var screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: self.rotation)
+                                if (notFound) {
+                                    screenPosition.y += 18 // Adjust position for trees
+                                }
                                 sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
                                 sprite.size = spriteSize
                                 sprite.zPosition = CGFloat(convertWorldToZPosition(position, spriteSize: spriteSize, direction: self.rotation))
@@ -157,7 +130,7 @@ class IsometricScene: SKScene {
                                 sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
                                 self.rootNode.addChild(sprite)
                                 
-                                if (sprite.name == "seedling" || sprite.name == "tree") {
+                                if (sprite.name == "monster") {
                                     let growAction = SKAction.scaleY(to: 1.0, duration: 0.5)
                                     sprite.run(growAction)
                                 }

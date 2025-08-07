@@ -46,7 +46,7 @@ class StepProgressManager {
     func generatePlantProgressGrid(totalSteps: Int) -> [[Int]] {
         let rows = 5
         let cols = 5
-        let stepsPerLevelUp = 250 // 40,000 steps to max out entire grid (5x5 * 2 levels * 800 steps/level)
+        let stepsPerLevelUp = 500 // 40,000 steps to max out entire grid (5x5 * 2 levels * 800 steps/level)
         let stepsToUse = totalSteps
         let numTotalUpgrades = stepsToUse / stepsPerLevelUp
         
@@ -55,7 +55,11 @@ class StepProgressManager {
         var numOfExistingUpgrades = -25 // Start with -25 to account for the initial dirt state
         for r in 0..<rows {
             for c in 0..<cols {
-                numOfExistingUpgrades += grid[r][c]
+                var gridVal = grid[r][c]
+                if (gridVal > 2) {
+                    gridVal = 2
+                }
+                numOfExistingUpgrades += gridVal
             }
         }
         
@@ -65,7 +69,6 @@ class StepProgressManager {
         for r in 0..<rows {
             for c in 0..<cols {
                 upgradeOpportunities.append((row: r, col: c)) // For 1 -> 2
-                upgradeOpportunities.append((row: r, col: c)) // For 2 -> 3
             }
         }
 
@@ -80,10 +83,19 @@ class StepProgressManager {
             let r = opportunity.row
             let c = opportunity.col
 
-            if grid[r][c] < 3 {
-                grid[r][c] += 1
+            if grid[r][c] < 2 {
+                var newValue = grid[r][c] + 1
+                if (newValue == 2) {
+                    newValue = MonsterHelper.calculateNewFind()
+                }
+                grid[r][c] = newValue
                 upgradesAppliedCount += 1
             }
+        }
+        
+        let legacyCheckResult = legacyValueCheck(grid: grid)
+        if (legacyCheckResult.1) {
+            grid = legacyCheckResult.0 // Update grid if legacy values were found and replaced
         }
 
         return grid
@@ -95,6 +107,26 @@ class StepProgressManager {
             await loadCurrentProgress()
             completion()
         }
+    }
+    
+    // Check for legacy values in the grid
+    private func legacyValueCheck(grid: [[Int]]) -> ([[Int]], Bool) {
+        let rows = 5
+        let cols = 5
+        var grid = grid
+        var didChange = false
+        // Check for legacy values
+        for r in 0..<rows {
+            for c in 0..<cols {
+                if grid[r][c] == 3 || grid[r][c] == 2 {
+                    let newValue = MonsterHelper.calculateNewFind()
+                    grid[r][c] = newValue // Replace legacy value with a new monster find
+                    didChange = true
+                }
+            }
+        }
+        
+        return (grid, didChange)
     }
 
     // Load current progress from Firestore
@@ -165,6 +197,27 @@ class StepProgressManager {
             ]
             try await docRef.setData(data)
             print("Saved current progress: Steps=\(currentDaySteps), Last Reset=\(lastGridResetDate.formattedAsYYYYMMDD())")
+        } catch {
+            print("Error saving current progress: \(error.localizedDescription)")
+        }
+    }
+    
+    private func saveGrid(grid: [[Int]], forDate: Date) async {
+        guard let userId = SwiftAppDefaults.shared.userId else {
+            print("User ID not available for saving progress.")
+            return
+        }
+
+        let docRef = db.collection("users").document(userId).collection("dailyGrids").document("\(forDate.formattedAsYYYYMMDD())")
+
+        do {
+            let gridJsonData = try JSONEncoder().encode(grid)
+            let gridJsonString = String(data: gridJsonData, encoding: .utf8) ?? "[]"
+
+            let data: [String: Any] = [
+                "grid": gridJsonString,
+            ]
+            try await docRef.updateData(data)
         } catch {
             print("Error saving current progress: \(error.localizedDescription)")
         }
@@ -242,10 +295,17 @@ class StepProgressManager {
         
         let doc = try? await historyCollectionRef.document(date.formattedAsYYYYMMDD()).getDocument()
         let grid = doc?.data()?["grid"] as? String
+        let date = (doc?.data()?["timestamp"] as? Timestamp)?.dateValue() ?? Date()
         
         if let jsonData = grid?.data(using: .utf8) {
             do {
-                let decodedData = try JSONDecoder().decode([[Int]].self, from: jsonData)
+                var decodedData = try JSONDecoder().decode([[Int]].self, from: jsonData)
+                
+                let legacyCheckResult = legacyValueCheck(grid: decodedData)
+                if (legacyCheckResult.1) {
+                    decodedData = legacyCheckResult.0 // Update grid if legacy values were found and replaced
+                    await self.saveGrid(grid: decodedData, forDate: date) // Save the updated grid
+                }
                 return decodedData
             } catch {
                 print("Error decoding JSON: \(error)")

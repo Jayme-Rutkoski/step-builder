@@ -27,8 +27,6 @@ class HomeCoordinator {
         vc.setScene()
         vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: CurrencyView(frame: .zero))
         
-        DailyRewardView().displayView(vc)
-        
         return vc
     }
 }

@@ -1,22 +1,22 @@
 //
-//  DailyRewardView.swift
+//  MonsterFoundView.swift
 //  StepBuilder
 //
-//  Created by Jayme Rutkoski on 8/4/25.
+//  Created by Jayme Rutkoski on 8/6/25.
 //
 
 import UIKit
 import SnapKit
 import Foundation
 
-class DailyRewardView: UIView {
+class MonsterFoundView: UIView {
     
     private var onCompletion: (() -> ())!
     
     private lazy var viewOpacity: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .black
-        view.layer.opacity = 0.6
+        view.layer.opacity = 0.8
         
         return view
     }()
@@ -24,7 +24,7 @@ class DailyRewardView: UIView {
     private lazy var labelTitle: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = FontHelper.getArialBlackFont(size: 20)
-        label.text = "DAILY GIFT"
+        label.text = "Monster Found!"
         label.textColor = .white
         
         return label
@@ -33,7 +33,7 @@ class DailyRewardView: UIView {
     private lazy var viewTitle: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(hex: 0x800080)
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = 10
         
         return view
     }()
@@ -41,63 +41,42 @@ class DailyRewardView: UIView {
     private lazy var viewBackground: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(hex: 0xcc99cc)
-        view.layer.cornerRadius = 10
+        view.layer.cornerRadius = 15
         
         return view
     }()
     
-    private lazy var stackViewReward: UIStackView = {
+    private lazy var stackViewMonster: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.backgroundColor = UIColor(hex: 0xa64ca6)
-        stackView.layer.cornerRadius = 15
+        stackView.layer.cornerRadius = 20
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        stackView.layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         stackView.isLayoutMarginsRelativeArrangement = true
         
         return stackView
     }()
     
-    private lazy var buttonClaim: UIButton = {
+    private lazy var buttonClose: UIButton = {
         let button = UIButton(frame: .zero)
-        button.setTitle("Claim", for: .normal)
+        button.setTitle("Close", for: .normal)
         button.titleLabel?.font = FontHelper.getBoldFont(size: 16)
         button.setTitleColor(.white, for: .normal)
-        button.addTarget(self, action: #selector(self.buttonClaim_TouchUpInside), for: .touchUpInside)
-        button.backgroundColor = UIColor(hex: 0x008000)
+        button.addTarget(self, action: #selector(buttonClose_TouchUpInside), for: .touchUpInside)
+        button.backgroundColor = UIColor(hex: 0x800080)
         button.layer.cornerRadius = 10
         button.isUserInteractionEnabled = true
         
         return button
     }()
     
-    private lazy var imageViewReward: UIImageView = {
+    private lazy var imageViewMonster: UIImageView = {
         let imageView = UIImageView(frame: .zero)
-        imageView.image = UIImage(named: "coin")
         imageView.contentMode = .scaleAspectFit
         
         return imageView
-    }()
-    
-    private lazy var labelRewardAmount: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.textAlignment = .center
-        
-        let strokeTextAttributes: [NSAttributedString.Key : Any] = [
-                    .strokeColor : UIColor.black, // Color of the outline
-                    .foregroundColor : UIColor.white, // Color of the text fill
-                    .strokeWidth : -5.0, // Negative value for stroke to apply inside and outside the text
-                    .font : FontHelper.getSFCompactRoundedBoldFont(size: 20)
-                ]
-
-        // Create an attributed string with the defined attributes
-        let outlinedText = NSAttributedString(string: "25", attributes: strokeTextAttributes)
-
-        // Assign the attributed string to the UILabel
-        label.attributedText = outlinedText
-        
-        return label
     }()
     
     private func setup(viewController: UIViewController) {
@@ -115,10 +94,8 @@ class DailyRewardView: UIView {
         
         self.addSubview(self.viewTitle)
         self.viewTitle.snp.makeConstraints { make in
-            make.centerY.equalTo(self.viewBackground.snp.top)
+            make.top.equalTo(self.viewBackground.snp.top).offset(20)
             make.centerX.equalTo(self.viewBackground.snp.centerX)
-            make.left.equalTo(self.viewBackground.snp.left).offset(30)
-            make.right.equalTo(self.viewBackground.snp.right).offset(-30)
         }
         
         self.viewTitle.addSubview(self.labelTitle)
@@ -129,36 +106,32 @@ class DailyRewardView: UIView {
             make.right.equalTo(self.viewTitle.snp.right).offset(-12)
         }
 
-        self.viewBackground.addSubview(self.buttonClaim)
-        self.buttonClaim.snp.makeConstraints { make in
-            make.centerY.equalTo(self.viewBackground.snp.bottom)
+        self.viewBackground.addSubview(self.buttonClose)
+        self.buttonClose.snp.makeConstraints { make in
+            make.bottom.equalTo(self.viewBackground.snp.bottom).offset(-20)
             make.centerX.equalTo(self.viewBackground.snp.centerX)
-            make.height.equalTo(35)
+            make.height.equalTo(40)
             make.width.equalTo(70)
         }
         
-        self.viewBackground.addSubview(self.stackViewReward)
-        self.stackViewReward.snp.makeConstraints { make in
+        self.viewBackground.addSubview(self.stackViewMonster)
+        self.stackViewMonster.snp.makeConstraints { make in
             make.top.equalTo(self.viewTitle.snp.bottom).offset(20)
-            make.centerX.equalTo(self.viewBackground.snp.centerX)
-            make.bottom.equalTo(self.buttonClaim.snp.top).offset(-25)
-            make.width.equalTo(self.stackViewReward.snp.height)
+            make.left.equalTo(self.viewBackground.snp.left).offset(40)
+            make.right.equalTo(self.viewBackground.snp.right).offset(-40)
+            make.bottom.equalTo(self.buttonClose.snp.top).offset(-20)
+            make.width.equalTo(self.stackViewMonster.snp.height)
         }
         
-        self.stackViewReward.addArrangedSubview(self.imageViewReward)
-        self.imageViewReward.snp.makeConstraints { make in
-            make.height.equalTo(50)
-            make.width.equalTo(50)
-        }
-        
-        self.viewBackground.addSubview(self.labelRewardAmount)
-        self.labelRewardAmount.snp.makeConstraints { make in
-            make.centerY.equalTo(self.stackViewReward.snp.bottom)
-            make.centerX.equalTo(self.stackViewReward.snp.centerX)
+        self.stackViewMonster.addArrangedSubview(self.imageViewMonster)
+        self.imageViewMonster.snp.makeConstraints { make in
+            make.height.equalTo(200)
+            make.width.equalTo(200)
         }
     }
     
-    private func displayOnViewController(_ viewController: UIViewController) {
+    private func displayOnViewController(_ viewController: UIViewController, monsterNumber: Int = 99999) {
+        self.imageViewMonster.image = UIImage(named: "\(monsterNumber)")
         viewController.view.addSubview(self)
         self.setup(viewController: viewController)
         viewController.view.layoutIfNeeded()
@@ -169,20 +142,19 @@ class DailyRewardView: UIView {
         })
     }
     
-    @objc private func buttonClaim_TouchUpInside() {
+    @objc private func buttonClose_TouchUpInside() {
         UIView.animate(withDuration: 0.3, animations: {
             self.layer.opacity = 0.0
         }) { _ in
             self.removeFromSuperview()
             self.onCompletion()
         }
-        NotificationCenter.default.post(name: .DailyRewardClaimed, object: 25)
     }
     
-    public func displayView(_ viewController: UIViewController, onCompletion: @escaping (() -> ())) {
+    public func displayView(_ viewController: UIViewController, monsterNumber: Int = 99999, onCompletion: @escaping (() -> ())) {
         self.layer.opacity = 0.0
         self.onCompletion = onCompletion
-        self.displayOnViewController(viewController)
+        self.displayOnViewController(viewController, monsterNumber: monsterNumber)
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {

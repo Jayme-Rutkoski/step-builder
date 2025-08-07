@@ -33,7 +33,7 @@ class FontHelper {
         return UIFont(name: "SFCompactRounded-Bold", size: size) ?? getBaseBoldFont(size: size)
     }
     
-    static func getSignPainterSemiBoldFont(size: CGFloat) -> UIFont {
+    static func getArialBlackFont(size: CGFloat) -> UIFont {
         return UIFont(name: "Arial-Black", size: size) ?? getBaseBoldFont(size: size)
         //return UIFont(name: "SignPainter-HouseScriptSemiBold", size: size) ?? getBaseBoldFont(size: size)
     }

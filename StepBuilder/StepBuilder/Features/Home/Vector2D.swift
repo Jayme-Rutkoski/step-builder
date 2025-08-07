@@ -9,8 +9,8 @@
 import Foundation
 
 struct Vector2D { 
-    let x: Int
-    let y: Int
+    var x: Int
+    var y: Int
     
     static var zero: Vector2D {
         Vector2D(x: 0, y: 0)

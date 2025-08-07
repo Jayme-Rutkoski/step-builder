@@ -28,6 +28,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let shownOnboarding = "AppDefaults.Keys.shownOnboarding"
         public static let userId = "AppDefaults.Keys.userId"
         public static let coins = "AppDefaults.Keys.coins"
+        public static let monstersFound = "AppDefaults.Keys.monstersFound"
     }
     
     public var installDate: Date {
@@ -61,6 +62,30 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
             return defaults.integer(forKey: Keys.coins)
         } set {
             defaults.set(newValue, forKey: Keys.coins)
+        }
+    }
+    
+    public var monstersFound: [Int] {
+        get {
+            return defaults.array(forKey: Keys.monstersFound) as? [Int] ?? []
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.monstersFound)
+        }
+    }
+    
+    public static func addMonster(_ id: Int) {
+        var monsters = SwiftAppDefaults.shared.monstersFound
+        monsters.append(id)
+        SwiftAppDefaults.shared.monstersFound = monsters
+        
+    }
+    
+    public static func removeMonster(_ id: Int) {
+        var monsters = SwiftAppDefaults.shared.monstersFound
+        if let index = monsters.firstIndex(of: id) {
+            monsters.remove(at: index)
+            SwiftAppDefaults.shared.monstersFound = monsters
         }
     }
 }
