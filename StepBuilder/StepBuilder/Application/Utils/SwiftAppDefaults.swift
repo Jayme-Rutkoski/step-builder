@@ -29,6 +29,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let userId = "AppDefaults.Keys.userId"
         public static let coins = "AppDefaults.Keys.coins"
         public static let monstersFound = "AppDefaults.Keys.monstersFound"
+        public static let monsterDex = "AppDefaults.Keys.monsterDex"
     }
     
     public var installDate: Date {
@@ -74,19 +75,36 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         }
     }
     
+    public var monsterDex: [Int] {
+        get {
+            return defaults.array(forKey: Keys.monsterDex) as? [Int] ?? []
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.monsterDex)
+        }
+    }
+    
     public static func addMonster(_ id: Int) {
-        var monsters = SwiftAppDefaults.shared.monstersFound
-        monsters.append(id)
-        SwiftAppDefaults.shared.monstersFound = monsters
+        var monsterDex = SwiftAppDefaults.shared.monsterDex
+        var monstersFound = SwiftAppDefaults.shared.monstersFound
         
+        if (!monsterDex.contains(id)) {
+            monsterDex.append(id)
+            if (!monstersFound.contains(id)) {
+                monstersFound.append(id)
+            }
+        }
+
+        SwiftAppDefaults.shared.monstersFound = monstersFound
+        SwiftAppDefaults.shared.monsterDex = monsterDex
     }
     
     public static func removeMonster(_ id: Int) {
         var monsters = SwiftAppDefaults.shared.monstersFound
-        if let index = monsters.firstIndex(of: id) {
-            monsters.remove(at: index)
-            SwiftAppDefaults.shared.monstersFound = monsters
+        if (monsters.contains(id)) {
+            monsters.removeAll(where: { $0 == id })
         }
+        SwiftAppDefaults.shared.monstersFound = monsters
     }
 }
 

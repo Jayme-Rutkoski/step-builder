@@ -24,7 +24,7 @@ class MonsterFoundView: UIView {
     private lazy var labelTitle: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = FontHelper.getArialBlackFont(size: 20)
-        label.text = "Monster Found!"
+        label.text = "New Monster Found!"
         label.textColor = .white
         
         return label

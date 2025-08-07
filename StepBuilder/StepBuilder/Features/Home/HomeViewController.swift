@@ -127,7 +127,6 @@ class HomeViewController: UIViewController {
         
         self.setup()
         
-        print("YYY Showing Daily Reward")
         self.queueUpNextModal {
             DailyRewardView().displayView(self) {
                 self.modalDismissed()
@@ -364,7 +363,9 @@ class HomeViewController: UIViewController {
     
     @objc private func monsterFound(notification: Notification) {
         if let monsterNum = notification.object as? Int {
-            self.displayMonsterFound(monsterNum)
+            if (SwiftAppDefaults.shared.monstersFound.contains(monsterNum)) {
+                self.displayMonsterFound(monsterNum)
+            }
         }
     }
     
