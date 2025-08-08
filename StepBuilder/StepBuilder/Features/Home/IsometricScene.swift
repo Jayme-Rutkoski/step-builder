@@ -70,10 +70,10 @@ class IsometricScene: SKScene {
                             let elevation = map[Vector2D(x: x, y: y)]
                             print("ELEVATION: \(elevation)")
                             for z in 0 ... 1 {
+                                var noneFound = false
                                 let spriteSize = CGSize(width: 60, height: 60)
                                 var sprite = SKSpriteNode(imageNamed: "soil_tile")
                                 sprite.name = "soil"
-                                var notFound = false
                                 
                                 if (z == 0 && self.isLoaded) {
                                     continue
@@ -82,23 +82,8 @@ class IsometricScene: SKScene {
                                 if (z == 1) {
                                     if (elevation == 1) {
                                         continue
-                                    } /*else if (elevation == 2) {
-                                        sprite = SKSpriteNode(imageNamed: "seedling_tile")
-                                        sprite.name = "seedling"
-                                        sprite.yScale = 0.0
-                                        sprite.xScale = 1.0
-                                    } else if (elevation == 3) {
-                                        let monsterNum = MonsterHelper.calculateNewFind()
-                                        let monsterImageName = "99999"
-                                        notFound = true
-                                        sprite = SKSpriteNode(imageNamed: monsterImageName)
-                                        sprite.name = "tree"
-                                        sprite.yScale = 0.0
-                                        sprite.xScale = 1.0
-                                       }*/
-                                    else if (elevation == 99999) {
-                                        notFound = true
-                                        print("NOT FOUND")
+                                    } else if (elevation == 99999) {
+                                        noneFound = true
                                         sprite = SKSpriteNode(imageNamed: "\(elevation)")
                                         sprite.name = "monster"
                                         sprite.yScale = 0.0
@@ -117,8 +102,10 @@ class IsometricScene: SKScene {
                                 
                                 let color = SKColor.white
                                 var screenPosition = convertWorldToScreen(position, spriteSize: spriteSize, direction: self.rotation)
-                                if (notFound) {
-                                    screenPosition.y += 18 // Adjust position for trees
+                                if (noneFound) {
+                                    screenPosition.y += 16
+                                } else if (sprite.name == "monster") {
+                                    screenPosition.y += 8
                                 }
                                 sprite.position = CGPoint(x: screenPosition.x, y: screenPosition.y)
                                 sprite.size = spriteSize
@@ -127,7 +114,7 @@ class IsometricScene: SKScene {
                                 sprite.colorBlendFactor = 1.0
                                 sprite.color = color
                                 
-                                sprite.userData = ["coord": position] // associate the tile sprite with its coordinate
+                                sprite.userData = ["coord": position]
                                 self.rootNode.addChild(sprite)
                                 
                                 if (sprite.name == "monster") {

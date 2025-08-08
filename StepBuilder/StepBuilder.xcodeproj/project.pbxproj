@@ -188,6 +188,7 @@
 				INFOPLIST_FILE = StepBuilder/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Required to retrieve the step count.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Required to retrieve the step count.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Required to retrieve the step count.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -219,6 +220,7 @@
 				INFOPLIST_FILE = StepBuilder/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Required to retrieve the step count.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Required to retrieve the step count.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Required to retrieve the step count.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

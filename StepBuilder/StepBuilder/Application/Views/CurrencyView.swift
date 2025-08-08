@@ -11,9 +11,12 @@ import UICountingLabel
 
 class CurrencyView: UIView {
     
+    private var currentCoins: Int = 0
+    
     private lazy var labelCurrency: UICountingLabel = {
         let label = UICountingLabel(frame: .zero)
         label.font = FontHelper.getBoldFont(size: 16)
+        self.currentCoins = SwiftAppDefaults.shared.coins
         label.count(from: 0, to: CGFloat(SwiftAppDefaults.shared.coins), withDuration: 0.3)
         label.textColor = .black
         label.format = "%d"
@@ -40,7 +43,7 @@ class CurrencyView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setup()
-        NotificationCenter.default.addObserver(self, selector: #selector(dailyRewardClaimed), name: .DailyRewardClaimed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(currencyUpdate), name: .CurrencyUpdate, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -63,12 +66,12 @@ class CurrencyView: UIView {
         }
     }
     
-    @objc private func dailyRewardClaimed(_ notification: Notification) {
-        let dailyReward = notification.object as? Int ?? 0
-        var newCoins = SwiftAppDefaults.shared.coins
-        let oldCoins = newCoins
-        newCoins = newCoins + dailyReward
+    @objc private func currencyUpdate(_ notification: Notification) {
+        let coins = notification.object as? Int ?? 0
+        let oldCoins = self.currentCoins
+        let newCoins = oldCoins + coins
         SwiftAppDefaults.shared.coins = newCoins
+        self.currentCoins = newCoins
         self.labelCurrency.count(from: CGFloat(oldCoins), to: CGFloat(newCoins), withDuration: 0.3)
     }
 }

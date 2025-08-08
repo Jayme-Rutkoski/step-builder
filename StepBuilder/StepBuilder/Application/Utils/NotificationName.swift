@@ -9,6 +9,6 @@
 import Foundation
 
 public extension Notification.Name {
-    static let DailyRewardClaimed: NSNotification.Name = Notification.Name("Notification.Name.DailyRewardClaimed")
+    static let CurrencyUpdate: NSNotification.Name = Notification.Name("Notification.Name.CurrencyUpdate")
     static let MonsterFound: NSNotification.Name = Notification.Name("Notification.Name.MonsterFound")
 }

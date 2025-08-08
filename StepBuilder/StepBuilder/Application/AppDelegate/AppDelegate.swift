@@ -31,6 +31,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SwiftAppDefaults.shared.installDate = .now
         }
         
+        if (SwiftAppDefaults.shared.lastOpened == Date(timeIntervalSince1970: 0)) {
+            SwiftAppDefaults.shared.loginStreakCount = 1
+        } else {
+            let lastOpened = SwiftAppDefaults.shared.lastOpened
+            if (lastOpened.isSameDay(as: Date.now.getPastDate(byDays: 1)!)) {
+                SwiftAppDefaults.shared.loginStreakCount += 1
+                if (SwiftAppDefaults.shared.has7DayLoginStreak == false && SwiftAppDefaults.shared.loginStreakCount >= 7) {
+                    SwiftAppDefaults.shared.has7DayLoginStreak = true
+                    // Post notification
+                } else if (SwiftAppDefaults.shared.has14DayLoginStreak == false && SwiftAppDefaults.shared.loginStreakCount >= 14) {
+                    SwiftAppDefaults.shared.has14DayLoginStreak = true
+                    // Post notification
+                } else if (SwiftAppDefaults.shared.has30DayLoginStreak == false && SwiftAppDefaults.shared.loginStreakCount >= 30) {
+                    SwiftAppDefaults.shared.has30DayLoginStreak = true
+                    // Post notification
+                }
+            } else if (!lastOpened.isSameDay(as: Date.now)) {
+                SwiftAppDefaults.shared.loginStreakCount = 1
+            }
+        }
+        
+        SwiftAppDefaults.shared.lastOpened = .now
+        
         MainCoordinator().start()
         
         return true

@@ -182,6 +182,8 @@ class StepProgressManager {
             print("User ID not available for saving progress.")
             return
         }
+        
+        self.checkPerfectStreakCount(steps: currentDaySteps, date: lastGridResetDate)
 
         let docRef = db.collection("users").document(userId).collection("currentProgress").document("data")
 
@@ -251,6 +253,8 @@ class StepProgressManager {
             return
         }
         HealthHelper.fetchStepCount(forDate: date) { daySteps in
+            SwiftAppDefaults.shared.totalStepsTaken += Int(daySteps)
+            self.checkPerfectStreakCount(steps: Int(daySteps), date: date)
             let historyCollectionRef = self.db.collection("users").document(userId).collection("dailyGrids")
             let docId = date.formattedAsYYYYMMDD() // Use date as document ID
             let grid = self.generatePlantProgressGrid(totalSteps: Int(daySteps))
@@ -268,6 +272,28 @@ class StepProgressManager {
                 print("Saved daily history for \(docId): Steps=\(steps)")
             } catch {
                 print("Error saving daily grid to history: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func checkPerfectStreakCount(steps: Int, date: Date) {
+        if (!SwiftAppDefaults.shared.lastPerfectStreak.isSameDay(as: date)) {
+            if (steps >= 12500) {
+                SwiftAppDefaults.shared.lastPerfectStreak = date
+                SwiftAppDefaults.shared.perfectStreakCount += 1
+                
+                if (!SwiftAppDefaults.shared.hasPerfectDay && SwiftAppDefaults.shared.perfectStreakCount >= 1) {
+                    SwiftAppDefaults.shared.hasPerfectDay = true
+                    // Post Notification
+                } else if (!SwiftAppDefaults.shared.hasPerfectWeek && SwiftAppDefaults.shared.perfectStreakCount >= 7) {
+                    SwiftAppDefaults.shared.hasPerfectWeek = true
+                    // Post Notification
+                } else if (!SwiftAppDefaults.shared.hasPerfectMonth && SwiftAppDefaults.shared.perfectStreakCount >= 30) {
+                    SwiftAppDefaults.shared.hasPerfectMonth = true
+                    // Post Notification
+                }
+            } else {
+                SwiftAppDefaults.shared.perfectStreakCount = 0
             }
         }
     }

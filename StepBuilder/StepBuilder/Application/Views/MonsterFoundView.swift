@@ -59,12 +59,12 @@ class MonsterFoundView: UIView {
         return stackView
     }()
     
-    private lazy var buttonClose: UIButton = {
+    private lazy var buttonCollect: UIButton = {
         let button = UIButton(frame: .zero)
-        button.setTitle("Close", for: .normal)
+        button.setTitle("Collect", for: .normal)
         button.titleLabel?.font = FontHelper.getBoldFont(size: 16)
         button.setTitleColor(.white, for: .normal)
-        button.addTarget(self, action: #selector(buttonClose_TouchUpInside), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonCollect_TouchUpInside), for: .touchUpInside)
         button.backgroundColor = UIColor(hex: 0x800080)
         button.layer.cornerRadius = 10
         button.isUserInteractionEnabled = true
@@ -106,8 +106,8 @@ class MonsterFoundView: UIView {
             make.right.equalTo(self.viewTitle.snp.right).offset(-12)
         }
 
-        self.viewBackground.addSubview(self.buttonClose)
-        self.buttonClose.snp.makeConstraints { make in
+        self.viewBackground.addSubview(self.buttonCollect)
+        self.buttonCollect.snp.makeConstraints { make in
             make.bottom.equalTo(self.viewBackground.snp.bottom).offset(-20)
             make.centerX.equalTo(self.viewBackground.snp.centerX)
             make.height.equalTo(40)
@@ -119,7 +119,7 @@ class MonsterFoundView: UIView {
             make.top.equalTo(self.viewTitle.snp.bottom).offset(20)
             make.left.equalTo(self.viewBackground.snp.left).offset(40)
             make.right.equalTo(self.viewBackground.snp.right).offset(-40)
-            make.bottom.equalTo(self.buttonClose.snp.top).offset(-20)
+            make.bottom.equalTo(self.buttonCollect.snp.top).offset(-20)
             make.width.equalTo(self.stackViewMonster.snp.height)
         }
         
@@ -142,13 +142,15 @@ class MonsterFoundView: UIView {
         })
     }
     
-    @objc private func buttonClose_TouchUpInside() {
+    @objc private func buttonCollect_TouchUpInside() {
         UIView.animate(withDuration: 0.3, animations: {
             self.layer.opacity = 0.0
         }) { _ in
             self.removeFromSuperview()
             self.onCompletion()
         }
+        
+        NotificationCenter.default.post(name: .CurrencyUpdate, object: 5)
     }
     
     public func displayView(_ viewController: UIViewController, monsterNumber: Int = 99999, onCompletion: @escaping (() -> ())) {

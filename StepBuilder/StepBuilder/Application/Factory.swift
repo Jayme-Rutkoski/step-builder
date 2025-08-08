@@ -4,6 +4,7 @@
 //
 //  Created by Jayme Rutkoski on 7/24/25.
 //
+import CoreMotion
 
 class Factory {
     
@@ -29,4 +30,13 @@ class Factory {
         }
     }
     
+    private var _pedometer: CMPedometer? = nil
+    public var pedometer: CMPedometer {
+        get {
+            if _pedometer == nil {
+                _pedometer = CMPedometer()
+            }
+            return _pedometer!
+        }
+    }
 }

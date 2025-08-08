@@ -176,7 +176,7 @@ class DailyRewardView: UIView {
             self.removeFromSuperview()
             self.onCompletion()
         }
-        NotificationCenter.default.post(name: .DailyRewardClaimed, object: 25)
+        NotificationCenter.default.post(name: .CurrencyUpdate, object: 25)
     }
     
     public func displayView(_ viewController: UIViewController, onCompletion: @escaping (() -> ())) {

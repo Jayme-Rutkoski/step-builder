@@ -8,12 +8,14 @@
 import UIKit
 import SpriteKit
 import HealthKit
+import CoreMotion
+import UICountingLabel
 
 class HomeViewController: UIViewController {
 
     private var scene: IsometricScene?
     private let healthStore = HKHealthStore()
-    private let stepGoal: CGFloat = 10000.0
+    private let stepGoal: CGFloat = 12500.0
     private var pageIndex: CGFloat = 0.0
     private var isModalDisplayed: Bool = false
     private var modalQueue: [(() -> ())] = []
@@ -25,6 +27,9 @@ class HomeViewController: UIViewController {
         
         return progressView
     }()
+    
+    private var todayStepLabel: UICountingLabel?
+    private var todayProgressView: CircularProgressGraphView?
     
     private lazy var labelProgressToGo: UILabel = {
         let label = UILabel(frame: .zero)
@@ -127,16 +132,24 @@ class HomeViewController: UIViewController {
         
         self.setup()
         
-        self.queueUpNextModal {
-            DailyRewardView().displayView(self) {
-                self.modalDismissed()
+        if (!Date.now.isSameDay(as: SwiftAppDefaults.shared.lastDailyGiftDate)) {
+            self.queueUpNextModal {
+                DailyRewardView().displayView(self) {
+                    SwiftAppDefaults.shared.lastDailyGiftDate = Date.now
+                    self.modalDismissed()
+                }
             }
         }
+        
         
         if (SwiftAppDefaults.shared.monstersFound.count > 0) {
             for monsterNumber in SwiftAppDefaults.shared.monstersFound {
                 self.displayMonsterFound(monsterNumber)
             }
+        }
+        
+        Factory.shared().pedometer.startUpdates(from: Date()) { data, error in
+            self.updateSteps(steps: data?.numberOfSteps.intValue ?? 0)
         }
     }
     
@@ -218,11 +231,12 @@ class HomeViewController: UIViewController {
         
         self.viewNoData.isHidden = true
         
-        self.authorizeHealthKit()
-        
+        //self.authorizeHealthKit()
+        self.calculateSteps()
     }
     
     private func authorizeHealthKit() {
+        /*
         let healthKitTypes: Set = [ HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)! ] // We want to access the step count.
         let status = healthStore.authorizationStatus(for: HKQuantityType.quantityType(forIdentifier: .stepCount)!) // Check the authorization status for step count.
         switch status {
@@ -239,113 +253,135 @@ class HomeViewController: UIViewController {
         @unknown default:
             print("UNKNOWN AUTHORIZATION STATUS")
         }
+         */
     }
     
     
     func calculateSteps() {
-        self.scrollView.subviews.forEach { $0.removeFromSuperview() }
-        self.rightImageView.isHidden = true
-        self.leftImageView.isHidden = false
-        
-        HealthHelper.fetchDailyStepCounts(forLast: 7) { dailySteps in
-            let containerView = UIView(frame: .zero)
-            containerView.translatesAutoresizingMaskIntoConstraints = false
-            self.scrollView.addSubview(containerView)
-            containerView.snp.makeConstraints { make in
-                make.right.equalTo(self.scrollView.contentLayoutGuide.snp.right)
-                make.left.equalTo(self.scrollView.contentLayoutGuide.snp.left)
-                make.top.equalTo(self.scrollView.contentLayoutGuide.snp.top)
-                make.bottom.equalTo(self.scrollView.contentLayoutGuide.snp.bottom)
-                make.height.equalTo(self.scrollView.frameLayoutGuide.snp.height)
-            }
-
+        DispatchQueue.main.async {
+            self.scrollView.subviews.forEach { $0.removeFromSuperview() }
+            self.rightImageView.isHidden = true
+            self.leftImageView.isHidden = false
             
-            var previousView: UIView?
-            
-            for (data) in dailySteps.enumerated().reversed() {
-                let steps = Int(data.element)
-                let stackView = UIStackView(frame: .zero)
-                stackView.axis = .vertical
-                stackView.alignment = .center
-                stackView.spacing = 5
+            HealthHelper.fetchDailyStepCounts(forLast: 7) { dailySteps in
+                let containerView = UIView(frame: .zero)
+                containerView.translatesAutoresizingMaskIntoConstraints = false
+                self.scrollView.addSubview(containerView)
+                containerView.snp.makeConstraints { make in
+                    make.right.equalTo(self.scrollView.contentLayoutGuide.snp.right)
+                    make.left.equalTo(self.scrollView.contentLayoutGuide.snp.left)
+                    make.top.equalTo(self.scrollView.contentLayoutGuide.snp.top)
+                    make.bottom.equalTo(self.scrollView.contentLayoutGuide.snp.bottom)
+                    make.height.equalTo(self.scrollView.frameLayoutGuide.snp.height)
+                }
                 
-                let customStackView = UIStackView(frame: .zero)
-                customStackView.axis = .vertical
-                customStackView.alignment = .center
-                customStackView.spacing = 5
                 
-                print("OFFSET: \(data.offset)")
-                let offset = data.offset - 6
-                let dateLabel = UILabel(frame: .zero)
-                dateLabel.font = FontHelper.getBoldFont(size: 24)
-                dateLabel.textColor = .black
-                dateLabel.text = offset == 0 ? "Today" : Date().getPastDate(byDays: abs(offset))?.formatted(.dateTime.month(.abbreviated).day()) ?? ""
+                var previousView: UIView?
                 
-                customStackView.addArrangedSubview(dateLabel)
-                
-                let titleLabel = UILabel(frame: .zero)
-                titleLabel.font = FontHelper.getBoldFont(size: 28)
-                titleLabel.textColor = .black
-                titleLabel.text = Int(steps).withCommas()
-                
-                customStackView.addArrangedSubview(titleLabel)
-                
-                let subtitleLabel = UILabel(frame: .zero)
-                subtitleLabel.font = FontHelper.getBoldFont(size: 14)
-                subtitleLabel.textColor = .black
-                subtitleLabel.text = "of \(Int(self.stepGoal).withCommas()) steps"
-                
-                customStackView.addArrangedSubview(subtitleLabel)
-                
-                let progressView = CircularProgressGraphView(customView: customStackView)
-                progressView.progress = CGFloat(steps) / self.stepGoal
-                stackView.addArrangedSubview(progressView)
-                containerView.addSubview(stackView)
+                for (data) in dailySteps.enumerated().reversed() {
+                    let steps = Int(data.element)
+                    let stackView = UIStackView(frame: .zero)
+                    stackView.axis = .vertical
+                    stackView.alignment = .center
+                    stackView.spacing = 5
+                    
+                    let customStackView = UIStackView(frame: .zero)
+                    customStackView.axis = .vertical
+                    customStackView.alignment = .center
+                    customStackView.spacing = 5
+                    
+                    print("OFFSET: \(data.offset)")
+                    let offset = data.offset - 6
+                    let dateLabel = UILabel(frame: .zero)
+                    dateLabel.font = FontHelper.getBoldFont(size: 24)
+                    dateLabel.textColor = .black
+                    dateLabel.text = offset == 0 ? "Today" : Date().getPastDate(byDays: abs(offset))?.formatted(.dateTime.month(.abbreviated).day()) ?? ""
+                    
+                    customStackView.addArrangedSubview(dateLabel)
+                    
+                    let titleLabel = UICountingLabel(frame: .zero)
+                    titleLabel.font = FontHelper.getBoldFont(size: 28)
+                    titleLabel.textColor = .black
+                    titleLabel.format = "%d"
+                    titleLabel.count(from: 0, to: CGFloat(steps))
+                    //titleLabel.text = Int(steps).withCommas()
 
-                if let previousView = previousView {
-                    stackView.snp.makeConstraints { make in
-                        make.width.equalTo(self.scrollView.frameLayoutGuide.snp.width)
-                        make.height.equalTo(self.scrollView.frameLayoutGuide.snp.height)
-                        make.centerY.equalTo(containerView.snp.centerY)
-                        make.right.equalTo(previousView.snp.left)
+                    customStackView.addArrangedSubview(titleLabel)
+                    
+                    let subtitleLabel = UILabel(frame: .zero)
+                    subtitleLabel.font = FontHelper.getBoldFont(size: 14)
+                    subtitleLabel.textColor = .black
+                    subtitleLabel.text = "of \(Int(self.stepGoal).withCommas()) steps"
+                    
+                    customStackView.addArrangedSubview(subtitleLabel)
+                    
+                    let progressView = CircularProgressGraphView(customView: customStackView)
+                    progressView.progress = CGFloat(steps) / self.stepGoal
+                    stackView.addArrangedSubview(progressView)
+                    containerView.addSubview(stackView)
+                    
+                    if let previousView = previousView {
+                        stackView.snp.makeConstraints { make in
+                            make.width.equalTo(self.scrollView.frameLayoutGuide.snp.width)
+                            make.height.equalTo(self.scrollView.frameLayoutGuide.snp.height)
+                            make.centerY.equalTo(containerView.snp.centerY)
+                            make.right.equalTo(previousView.snp.left)
+                        }
+                    } else {
+                        stackView.snp.makeConstraints { make in
+                            make.width.equalTo(self.scrollView.frameLayoutGuide.snp.width)
+                            make.height.equalTo(self.scrollView.frameLayoutGuide.snp.height)
+                            make.centerY.equalTo(containerView.snp.centerY)
+                            make.right.equalTo(containerView.snp.right)
+                        }
                     }
-                } else {
-                    stackView.snp.makeConstraints { make in
-                        make.width.equalTo(self.scrollView.frameLayoutGuide.snp.width)
-                        make.height.equalTo(self.scrollView.frameLayoutGuide.snp.height)
-                        make.centerY.equalTo(containerView.snp.centerY)
-                        make.right.equalTo(containerView.snp.right)
+                    
+                    previousView = stackView
+                    
+                    progressView.snp.makeConstraints { make in
+                        make.height.equalTo(250)
+                        make.width.equalTo(250)
+                    }
+                    
+                    if (dateLabel.text == "Today") {
+                        self.todayStepLabel = titleLabel
+                        self.todayProgressView = progressView
                     }
                 }
                 
-                previousView = stackView
                 
-                progressView.snp.makeConstraints { make in
-                    make.height.equalTo(250)
-                    make.width.equalTo(250)
+                if let lastView = previousView {
+                    lastView.snp.makeConstraints { make in
+                        make.left.equalTo(containerView.snp.left)
+                    }
                 }
+                
+                DispatchQueue.main.async {
+                    let xOffset = self.scrollView.frame.width * CGFloat(6)
+                    self.scrollView.setContentOffset(CGPoint(x: xOffset, y: 0), animated: false)
+                }
+                
+                self.updateSteps(steps: Int(dailySteps.last ?? 0), updateProgress: false)
+            }
+        }
+    }
+    
+    private func updateSteps(steps: Int, updateProgress: Bool = true) {
+        Task {
+            await Factory.shared().stepProgressManager.addSteps(steps: steps)
+            let stepsSoFar = steps % 500
+            UIView.animate(withDuration: 0.2) {
+                self.progressView.progress = Float(CGFloat(stepsSoFar) / 500)
+            }
+            self.labelProgressToGo.text = "Next tile search in \(500 - stepsSoFar) steps."
+            self.scene?.load(date: .now) { hasData in
+                self.viewNoData.isHidden = hasData
             }
             
-            
-            if let lastView = previousView {
-                lastView.snp.makeConstraints { make in
-                    make.left.equalTo(containerView.snp.left)
-                }
-            }
-            
-            DispatchQueue.main.async {
-                let xOffset = self.scrollView.frame.width * CGFloat(6)
-                self.scrollView.setContentOffset(CGPoint(x: xOffset, y: 0), animated: false)
-            }
-
-            Task {
-                await Factory.shared().stepProgressManager.addSteps(steps: Int(dailySteps.last ?? 0))
-                let stepsLeft = Int(dailySteps.last ?? 0) % 500
-                self.progressView.progress = Float(CGFloat(stepsLeft) / 500)
-                self.labelProgressToGo.text = "Next tile search in \(stepsLeft) steps."
-                self.scene?.load(date: .now) { hasData in
-                    self.viewNoData.isHidden = hasData
-                }
+            if (updateProgress) {
+                let currentCount = self.todayStepLabel?.currentValue() ?? 0
+                self.todayStepLabel?.count(from: currentCount, to: currentCount + CGFloat(steps), withDuration: 0.3)
+                self.todayProgressView?.progress = CGFloat(steps) / self.stepGoal
             }
         }
     }
