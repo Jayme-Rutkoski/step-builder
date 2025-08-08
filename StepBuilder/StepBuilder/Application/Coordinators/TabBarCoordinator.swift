@@ -29,10 +29,15 @@ final public class TabBarCoordinator {
         let awardsNC = UINavigationController(rootViewController: AwardsCoordinator(viewController: tabBarController).getViewController())
 
         awardsNC.tabBarItem = UITabBarItem(title: "Awards", image: UIImage(named: "awards_unselected")?.withRenderingMode(.alwaysTemplate), selectedImage: UIImage(named: "awards_selected")?.withRenderingMode(.alwaysTemplate))
+        
+        let shopNC = UINavigationController(rootViewController: ShopCoordinator(viewController: tabBarController).getViewController())
+
+        shopNC.tabBarItem = UITabBarItem(title: "Shop", image: UIImage(named: "shop_unselected")?.withRenderingMode(.alwaysTemplate), selectedImage: UIImage(named: "shop_selected")?.withRenderingMode(.alwaysTemplate))
 
         tabBarController.viewControllers = [
             homeNC,
-            awardsNC
+            awardsNC,
+            shopNC
         ]
         
         tabBarController.tabBar.tintColor = .white
