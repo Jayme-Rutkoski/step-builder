@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import UIKit
 
-class ShopItem {
+class ShopItem: Codable {
     var name: String
     var price: Int
     var itemNumber: Int

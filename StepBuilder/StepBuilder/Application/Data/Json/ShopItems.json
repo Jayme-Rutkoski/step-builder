@@ -1,0 +1,22 @@
+[
+    {
+        "itemNumber": 10,
+        "name": "Repel",
+        "price": 5
+    },
+    {
+        "itemNumber": 20,
+        "name": "Bag",
+        "price": 3000
+    },
+    {
+        "itemNumber": 30,
+        "name": "Super Repel",
+        "price": 6000
+    },
+    {
+        "itemNumber": 40,
+        "name": "Ultra Repel",
+        "price": 8000
+    }
+]

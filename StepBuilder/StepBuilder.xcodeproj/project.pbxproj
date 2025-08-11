@@ -30,11 +30,22 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		261533E72E4A96150035298D /* Exceptions for "StepBuilder" folder in "Compile Sources" phase from "StepBuilder" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 26CDD2AB2E1C69E10046CDDD /* Sources */;
+			membershipExceptions = (
+				Application/Data/Json/ShopItems.json,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		26CDD2B12E1C69E10046CDDD /* StepBuilder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				26CDD2C12E1C69E30046CDDD /* Exceptions for "StepBuilder" folder in "StepBuilder" target */,
+				261533E72E4A96150035298D /* Exceptions for "StepBuilder" folder in "Compile Sources" phase from "StepBuilder" target */,
 			);
 			path = StepBuilder;
 			sourceTree = "<group>";

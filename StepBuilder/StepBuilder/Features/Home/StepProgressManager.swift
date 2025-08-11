@@ -10,17 +10,10 @@ import FirebaseAuth
 import FirebaseCore
 
 class StepProgressManager {
-    private var db: Firestore!
-
     // Current day's steps and grid state
     private var currentDaySteps: Int = 0
     private var lastGridResetDate: Date = Date()
     private lazy var currentGrid: [[Int]] = createGrid(rows: 5, cols: 5, initialValue: 1)
-
-    init() {
-        // Initialize Firebase app if not already initialized
-        self.db = Firestore.firestore()
-    }
 
     func createGrid<T>(rows: Int, cols: Int, initialValue: T) -> [[T]] {
         // Initialize an empty array to hold the rows of the grid.
@@ -131,98 +124,39 @@ class StepProgressManager {
 
     // Load current progress from Firestore
     private func loadCurrentProgress() async {
-        guard let userId = SwiftAppDefaults.shared.userId else {
-            print("User ID not available for loading progress.")
-            return
-        }
-
-        let docRef = db.collection("users").document(userId).collection("currentProgress").document("data")
-
-        do {
-            let document = try await docRef.getDocument()
-            if document.exists {
-                let data = document.data()
-                self.currentDaySteps = data?["currentDaySteps"] as? Int ?? 0
-                if let timestamp = data?["lastResetTimestamp"] as? Timestamp {
-                    self.lastGridResetDate = timestamp.dateValue()
+        if let progress = await Factory.shared().usersCollection.getCurrentProgress() {
+            self.currentDaySteps = progress.currentDaySteps
+            self.lastGridResetDate = progress.lastResetTimestamp.dateValue()
+            if let gridData = progress.currentGridState.data(using: .utf8) {
+                do {
+                    let decodedGrid = try JSONDecoder().decode([[Int]].self, from: gridData)
+                    self.currentGrid = decodedGrid
+                } catch {
+                    print("Error decoding saved grid: \(error.localizedDescription)")
+                    self.currentGrid = createGrid(rows: 5, cols: 5, initialValue: 1) // Reset if decoding fails
                 }
-                if let gridJsonString = data?["currentGridState"] as? String {
-                    if let gridData = gridJsonString.data(using: .utf8) {
-                        do {
-                            let decodedGrid = try JSONDecoder().decode([[Int]].self, from: gridData)
-                            self.currentGrid = decodedGrid
-                        } catch {
-                            print("Error decoding saved grid: \(error.localizedDescription)")
-                            self.currentGrid = createGrid(rows: 5, cols: 5, initialValue: 1) // Reset if decoding fails
-                        }
-                    }
-                }
-                print("Loaded current progress: Steps=\(currentDaySteps), Last Reset=\(lastGridResetDate.formattedAsYYYYMMDD())")
-            } else {
-                print("No existing progress found. Initializing new progress.")
-                // If no document exists, save the initial state
-                await saveCurrentProgress()
             }
-
-            // Check for daily reset after loading
-            await checkForDailyReset()
-
-        } catch {
-            print("Error loading current progress: \(error.localizedDescription)")
-            // If loading fails, ensure we have a default grid
-            self.currentGrid = createGrid(rows: 5, cols: 5, initialValue: 1)
-            self.currentDaySteps = 0
-            self.lastGridResetDate = Date()
+            print("Loaded current progress: Steps=\(currentDaySteps), Last Reset=\(lastGridResetDate.formattedAsYYYYMMDD())")
+        } else {
+            print("No existing progress found. Initializing new progress.")
+            // If no document exists, save the initial state
+            await saveCurrentProgress()
         }
+        
+        // Check for daily reset after loading
+        await checkForDailyReset()
     }
 
     // Save current progress to Firestore
-    private func saveCurrentProgress() async {
-        guard let userId = SwiftAppDefaults.shared.userId else {
-            print("User ID not available for saving progress.")
-            return
-        }
-        
+    private func saveCurrentProgress() {
         self.checkPerfectStreakCount(steps: currentDaySteps, date: lastGridResetDate)
-
-        let docRef = db.collection("users").document(userId).collection("currentProgress").document("data")
-
-        do {
-            let gridJsonData = try JSONEncoder().encode(currentGrid)
-            let gridJsonString = String(data: gridJsonData, encoding: .utf8) ?? "[]"
-
-            let data: [String: Any] = [
-                "currentDaySteps": currentDaySteps,
-                "lastResetTimestamp": Timestamp(date: lastGridResetDate),
-                "currentGridState": gridJsonString,
-                "userId": userId // Store userId for clarity in Firestore
-            ]
-            try await docRef.setData(data)
-            print("Saved current progress: Steps=\(currentDaySteps), Last Reset=\(lastGridResetDate.formattedAsYYYYMMDD())")
-        } catch {
-            print("Error saving current progress: \(error.localizedDescription)")
-        }
+        
+        Factory.shared().usersCollection.saveCurrentProgress(currentGrid: currentGrid, currentDaySteps: currentDaySteps, lastResetTimeStamp: lastGridResetDate)
     }
     
     private func saveGrid(grid: [[Int]], forDate: Date) async {
-        guard let userId = SwiftAppDefaults.shared.userId else {
-            print("User ID not available for saving progress.")
-            return
-        }
-
-        let docRef = db.collection("users").document(userId).collection("dailyGrids").document("\(forDate.formattedAsYYYYMMDD())")
-
-        do {
-            let gridJsonData = try JSONEncoder().encode(grid)
-            let gridJsonString = String(data: gridJsonData, encoding: .utf8) ?? "[]"
-
-            let data: [String: Any] = [
-                "grid": gridJsonString,
-            ]
-            try await docRef.updateData(data)
-        } catch {
-            print("Error saving current progress: \(error.localizedDescription)")
-        }
+        
+        await Factory.shared().usersCollection.updateDailyGrid(grid: grid, forDate: forDate)
     }
 
     // Check if it's a new day and handle reset/history save
@@ -237,42 +171,23 @@ class StepProgressManager {
             currentDaySteps = 0
             lastGridResetDate = today
             currentGrid = createGrid(rows: 5, cols: 5, initialValue: 1) // Start new grid as dirt
-            await saveCurrentProgress() // Save the reset state
+            saveCurrentProgress() // Save the reset state
         } else {
             print("Still the same day. Continuing with current progress.")
             // Recalculate grid based on currentDaySteps in case steps were added without app restart
             currentGrid = generatePlantProgressGrid(totalSteps: currentDaySteps)
-            await saveCurrentProgress() // Ensure the grid state is up-to-date in Firestore
+            saveCurrentProgress() // Ensure the grid state is up-to-date in Firestore
         }
     }
 
     // Save a daily grid snapshot to history
     private func saveDailyGridToHistory(steps: Int, date: Date) async {
-        guard let userId = SwiftAppDefaults.shared.userId else {
-            print("User ID not available for saving daily history.")
-            return
-        }
         HealthHelper.fetchStepCount(forDate: date) { daySteps in
             SwiftAppDefaults.shared.totalStepsTaken += Int(daySteps)
             self.checkPerfectStreakCount(steps: Int(daySteps), date: date)
-            let historyCollectionRef = self.db.collection("users").document(userId).collection("dailyGrids")
-            let docId = date.formattedAsYYYYMMDD() // Use date as document ID
             let grid = self.generatePlantProgressGrid(totalSteps: Int(daySteps))
             
-            do {
-                let gridJsonData = try JSONEncoder().encode(grid)
-                let gridJsonString = String(data: gridJsonData, encoding: .utf8) ?? "[]"
-                
-                let data: [String: Any] = [
-                    "steps": Int(daySteps),
-                    "grid": gridJsonString,
-                    "timestamp": Timestamp(date: date)
-                ]
-                historyCollectionRef.document(docId).setData(data)
-                print("Saved daily history for \(docId): Steps=\(steps)")
-            } catch {
-                print("Error saving daily grid to history: \(error.localizedDescription)")
-            }
+            Factory.shared().usersCollection.saveDailyGridToHistory(steps: Int(daySteps), grid: grid, date: date)
         }
     }
     
@@ -302,7 +217,7 @@ class StepProgressManager {
     func addSteps(steps: Int) async {
         currentGrid = generatePlantProgressGrid(totalSteps: steps)
         currentDaySteps = steps
-        await saveCurrentProgress()
+        saveCurrentProgress()
         print("Added \(steps) steps. Current total for today: \(currentDaySteps)")
     }
 
@@ -316,80 +231,16 @@ class StepProgressManager {
     }
     
     func getGridForDate(_ date: Date) async -> [[Int]]? {
-        guard let userId = SwiftAppDefaults.shared.userId else {
-            print("User ID not available for fetching history.")
-            return nil
-        }
-        
-        let historyCollectionRef = db.collection("users").document(userId).collection("dailyGrids")
-        
-        let doc = try? await historyCollectionRef.document(date.formattedAsYYYYMMDD()).getDocument()
-        let grid = doc?.data()?["grid"] as? String
-        let date = (doc?.data()?["timestamp"] as? Timestamp)?.dateValue() ?? Date()
-        
-        if let jsonData = grid?.data(using: .utf8) {
-            do {
-                var decodedData = try JSONDecoder().decode([[Int]].self, from: jsonData)
-                
-                let legacyCheckResult = legacyValueCheck(grid: decodedData)
-                if (legacyCheckResult.1) {
-                    decodedData = legacyCheckResult.0 // Update grid if legacy values were found and replaced
-                    await self.saveGrid(grid: decodedData, forDate: date) // Save the updated grid
-                }
-                return decodedData
-            } catch {
-                print("Error decoding JSON: \(error)")
-                return nil
+        if let result = await Factory.shared().usersCollection.getGridForDate(date) {
+            var decodedData = result.0
+            let legacyCheckResult = legacyValueCheck(grid: decodedData)
+            if (legacyCheckResult.1) {
+                decodedData = legacyCheckResult.0 // Update grid if legacy values were found and replaced
+                await self.saveGrid(grid: decodedData, forDate: result.1) // Save the updated grid
             }
+            return decodedData
         } else {
             return nil
         }
-    }
-
-    // Public method to get historical grids
-    func getDailyHistory(completion: @escaping ([[String: Any]]) -> Void) {
-        guard let userId = SwiftAppDefaults.shared.userId else {
-            print("User ID not available for fetching history.")
-            completion([])
-            return
-        }
-
-        let historyCollectionRef = db.collection("users").document(userId).collection("dailyGrids")
-
-        // Fetch all documents in the dailyGrids collection
-        historyCollectionRef.getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print("Error getting daily history: \(error.localizedDescription)")
-                completion([])
-            } else {
-                var history: [[String: Any]] = []
-                for document in querySnapshot!.documents {
-                    var data = document.data()
-                    // Convert grid JSON string back to [[Int]] if needed for display
-                    if let gridJsonString = data["grid"] as? String, let gridData = gridJsonString.data(using: .utf8) {
-                        do {
-                            let decodedGrid = try JSONDecoder().decode([[Int]].self, from: gridData)
-                            data["grid"] = decodedGrid // Replace string with actual array
-                        } catch {
-                            print("Error decoding history grid for \(document.documentID): \(error.localizedDescription)")
-                        }
-                    }
-                    history.append(data)
-                }
-                // Sort history by date if desired
-                history.sort { (item1, item2) -> Bool in
-                    if let ts1 = item1["timestamp"] as? Timestamp, let ts2 = item2["timestamp"] as? Timestamp {
-                        return ts1.dateValue() < ts2.dateValue()
-                    }
-                    return false
-                }
-                completion(history)
-            }
-        }
-    }
-
-    // Public method to get the current user ID
-    func getUserId() -> String {
-        return SwiftAppDefaults.shared.userId ?? "Unknown User"
     }
 }

@@ -55,12 +55,7 @@ class ShopViewController: UIViewController {
     }
     
     func populateList() {
-        self.items = [
-            ShopItem(name: "Repel", price: 5, itemNumber: 10),
-            ShopItem(name: "Bag", price: 3000, itemNumber: 20),
-            ShopItem(name: "Super Repel", price: 6000, itemNumber: 30),
-            ShopItem(name: "Ultra Repel", price: 8000, itemNumber: 40)
-        ]
+        self.items = Factory.shared().shopItems
         self.collectionView.reloadData()
     }
 }

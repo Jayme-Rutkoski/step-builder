@@ -1,0 +1,33 @@
+[
+    {
+        "id": 10,
+        "name": "Lizrad",
+        "rarity": "1"
+    },
+    {
+        "id": 20,
+        "name": "Hamurtine",
+        "rarity": "1"
+    },
+    {
+        "id": 30,
+        "name": "Monobat",
+        "rarity": "1"
+    },
+    {
+        "id": 40,
+        "name": "Boulsa",
+        "rarity": "1"
+    },
+    {
+        "id": 50,
+        "name": "Pupperbow",
+        "rarity": "2"
+    },
+    {
+        "id": 60,
+        "name": "Toturtle",
+        "rarity": "3"
+    }
+]
+
