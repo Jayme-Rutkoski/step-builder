@@ -135,9 +135,9 @@ class ShopCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(with name: String, image: UIImage?, price: Int) {
+    func configure(with itemNumber: Int, name: String, price: Int) {
         self.labelName.text = name
-        self.imageView.image = image
+        self.imageView.image = UIImage(named: "\(itemNumber)")
         self.labelPrice.text = "\(price)"
     }
 }

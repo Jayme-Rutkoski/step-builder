@@ -56,10 +56,10 @@ class ShopViewController: UIViewController {
     
     func populateList() {
         self.items = [
-            ShopItem(name: "Repel", price: 1000, image: UIImage(named: "10")),
-            ShopItem(name: "Bag", price: 3000, image: UIImage(named: "20")),
-            ShopItem(name: "Super Repel", price: 6000, image: UIImage(named: "30")),
-            ShopItem(name: "Ultra Repel", price: 8000, image: UIImage(named: "40"))
+            ShopItem(name: "Repel", price: 5, itemNumber: 10),
+            ShopItem(name: "Bag", price: 3000, itemNumber: 20),
+            ShopItem(name: "Super Repel", price: 6000, itemNumber: 30),
+            ShopItem(name: "Ultra Repel", price: 8000, itemNumber: 40)
         ]
         self.collectionView.reloadData()
     }
@@ -78,7 +78,7 @@ extension ShopViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ShopCollectionViewCell
         
         let item = self.items[indexPath.row]
-        cell.configure(with: item.name, image: item.image, price: item.price)
+        cell.configure(with: item.itemNumber, name: item.name, price: item.price)
         
         return cell
     }
@@ -93,6 +93,8 @@ extension ShopViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = self.items[indexPath.row]
-
+        ShopBuyView().displayView(self, itemNumber: item.itemNumber, name: item.name, price: item.price) {
+            
+        }
     }
 }

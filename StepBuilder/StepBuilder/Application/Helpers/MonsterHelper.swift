@@ -9,7 +9,7 @@ import Foundation
 class MonsterHelper {
     static func calculateNewFind() -> Int {
         var randomValue = Int.random(in: 0...100)
-        if (randomValue <= 60) {
+        if (randomValue <= 30) {
             // 60% chance to find nothing
             return 99999
         } else {

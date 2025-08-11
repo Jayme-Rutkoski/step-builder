@@ -15,7 +15,7 @@ class HomeViewController: UIViewController {
 
     private var scene: IsometricScene?
     private let healthStore = HKHealthStore()
-    private let stepGoal: CGFloat = 12500.0
+    private let stepGoal: CGFloat = Constants.stepGoal
     private var pageIndex: CGFloat = 0.0
     private var isModalDisplayed: Bool = false
     private var modalQueue: [(() -> ())] = []
@@ -369,19 +369,20 @@ class HomeViewController: UIViewController {
     private func updateSteps(steps: Int, updateProgress: Bool = true) {
         Task {
             await Factory.shared().stepProgressManager.addSteps(steps: steps)
-            let stepsSoFar = steps % 500
+            let stepsSoFar = steps % Int(Constants.stepsPerLevelUp)
             UIView.animate(withDuration: 0.2) {
-                self.progressView.progress = Float(CGFloat(stepsSoFar) / 500)
+                self.progressView.progress = Float(CGFloat(stepsSoFar) / Constants.stepsPerLevelUp)
             }
-            self.labelProgressToGo.text = "Next tile search in \(500 - stepsSoFar) steps."
+            self.labelProgressToGo.text = "Next tile search in \(Int(Constants.stepsPerLevelUp) - stepsSoFar) steps."
             self.scene?.load(date: .now) { hasData in
                 self.viewNoData.isHidden = hasData
             }
             
             if (updateProgress) {
                 let currentCount = self.todayStepLabel?.currentValue() ?? 0
-                self.todayStepLabel?.count(from: currentCount, to: currentCount + CGFloat(steps), withDuration: 0.3)
-                self.todayProgressView?.progress = CGFloat(steps) / self.stepGoal
+                let currentSteps = Factory.shared().stepProgressManager.getCurrentSteps()
+                self.todayStepLabel?.count(from: currentCount, to: CGFloat(currentSteps), withDuration: 0.3)
+                self.todayProgressView?.progress = CGFloat(currentSteps) / self.stepGoal
             }
         }
     }

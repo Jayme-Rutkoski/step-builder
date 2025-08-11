@@ -46,7 +46,7 @@ class StepProgressManager {
     func generatePlantProgressGrid(totalSteps: Int) -> [[Int]] {
         let rows = 5
         let cols = 5
-        let stepsPerLevelUp = 500 // 40,000 steps to max out entire grid (5x5 * 2 levels * 800 steps/level)
+        let stepsPerLevelUp = Int(Constants.stepsPerLevelUp)
         let stepsToUse = totalSteps
         let numTotalUpgrades = stepsToUse / stepsPerLevelUp
         
@@ -278,7 +278,7 @@ class StepProgressManager {
     
     private func checkPerfectStreakCount(steps: Int, date: Date) {
         if (!SwiftAppDefaults.shared.lastPerfectStreak.isSameDay(as: date)) {
-            if (steps >= 12500) {
+            if (steps >= Int(Constants.stepGoal)) {
                 SwiftAppDefaults.shared.lastPerfectStreak = date
                 SwiftAppDefaults.shared.perfectStreakCount += 1
                 
@@ -309,6 +309,10 @@ class StepProgressManager {
     // Public method to get the current grid
     func getCurrentGrid() -> [[Int]] {
         return currentGrid
+    }
+    
+    func getCurrentSteps() -> Int {
+        return currentDaySteps
     }
     
     func getGridForDate(_ date: Date) async -> [[Int]]? {

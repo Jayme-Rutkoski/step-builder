@@ -11,11 +11,11 @@ import UIKit
 class ShopItem {
     var name: String
     var price: Int
-    var image: UIImage?
+    var itemNumber: Int
     
-    init(name: String, price: Int, image: UIImage?) {
+    init(name: String, price: Int, itemNumber: Int) {
         self.name = name
         self.price = price
-        self.image = image
+        self.itemNumber = itemNumber
     }
 }
