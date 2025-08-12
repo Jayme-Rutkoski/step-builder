@@ -30,13 +30,6 @@ class MonsterDexViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
-        var dex = SwiftAppDefaults.shared.monsterDex
-        dex.removeAll(where: { $0 == 60})
-        SwiftAppDefaults.shared.monsterDex = dex
-        
-        print("MONSTER INVENTORY: \(SwiftAppDefaults.shared.monsterInventory)")
-        print("MONSTERS DEX: \(SwiftAppDefaults.shared.monsterDex)")
-        
         self.setup()
     }
     
