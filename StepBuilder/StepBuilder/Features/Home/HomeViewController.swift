@@ -64,6 +64,12 @@ class HomeViewController: UIViewController {
         return label
     }()
     
+    private lazy var viewSKContainer: FloatingView = {
+        let view = FloatingView(frame: .zero)
+        
+        return view
+    }()
+    
     private lazy var skView: SKView = {
         let view = SKView(frame: self.view.bounds)
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -117,6 +123,12 @@ class HomeViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -129,6 +141,8 @@ class HomeViewController: UIViewController {
             let value = UIInterfaceOrientation.landscapeLeft.rawValue
             UIDevice.current.setValue(value, forKey: "orientation")
         }
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped))
         
         self.setup()
         
@@ -151,6 +165,10 @@ class HomeViewController: UIViewController {
         Factory.shared().pedometer.startUpdates(from: Date()) { data, error in
             self.updateSteps(steps: data?.numberOfSteps.intValue ?? 0)
         }
+    }
+    
+    @objc private func inventoryTapped() {
+        InventoryCoordinator.init(viewController: self).start()
     }
     
     override func viewDidLayoutSubviews() {
@@ -211,12 +229,17 @@ class HomeViewController: UIViewController {
             make.width.equalTo(20)
         }
         
-        self.view.addSubview(skView)
-        skView.snp.makeConstraints { make in
+        self.view.addSubview(viewSKContainer)
+        viewSKContainer.snp.makeConstraints { make in
             make.top.equalTo(self.scrollView.snp.bottom).offset(16)
             make.left.equalTo(self.view.snp.left)
             make.right.equalTo(self.view.snp.right)
             make.bottom.equalTo(self.view.snp.bottomMargin)
+        }
+        
+        self.viewSKContainer.addSubview(skView)
+        skView.snp.makeConstraints { make in
+            make.edges.equalTo(self.viewSKContainer)
         }
         
         self.skView.addSubview(self.viewNoData)
@@ -303,7 +326,7 @@ class HomeViewController: UIViewController {
                     titleLabel.font = FontHelper.getBoldFont(size: 28)
                     titleLabel.textColor = .black
                     titleLabel.format = "%d"
-                    titleLabel.count(from: 0, to: CGFloat(steps))
+                    titleLabel.count(from: 0, to: CGFloat(steps), withDuration: 0.8)
                     //titleLabel.text = Int(steps).withCommas()
 
                     customStackView.addArrangedSubview(titleLabel)
@@ -370,7 +393,7 @@ class HomeViewController: UIViewController {
         Task {
             await Factory.shared().stepProgressManager.addSteps(steps: steps)
             let stepsSoFar = steps % Int(Constants.stepsPerLevelUp)
-            UIView.animate(withDuration: 0.2) {
+            UIView.animate(withDuration: 0.4) {
                 self.progressView.progress = Float(CGFloat(stepsSoFar) / Constants.stepsPerLevelUp)
             }
             self.labelProgressToGo.text = "Next tile search in \(Int(Constants.stepsPerLevelUp) - stepsSoFar) steps."
@@ -381,7 +404,7 @@ class HomeViewController: UIViewController {
             if (updateProgress) {
                 let currentCount = self.todayStepLabel?.currentValue() ?? 0
                 let currentSteps = Factory.shared().stepProgressManager.getCurrentSteps()
-                self.todayStepLabel?.count(from: currentCount, to: CGFloat(currentSteps), withDuration: 0.3)
+                self.todayStepLabel?.count(from: currentCount, to: CGFloat(currentSteps), withDuration: 0.8)
                 self.todayProgressView?.progress = CGFloat(currentSteps) / self.stepGoal
             }
         }
@@ -407,7 +430,12 @@ class HomeViewController: UIViewController {
     }
     
     @objc private func detectedForeground(notification: Notification) {
-        calculateSteps()
+        Factory.shared().stepProgressManager.initializeAndLoadProgress {
+            self.calculateSteps()
+            DispatchQueue.main.async {
+                self.viewSKContainer.startFloating()
+            }
+        }
     }
     
     private func modalDismissed() {
@@ -429,6 +457,18 @@ class HomeViewController: UIViewController {
         }
     }
     
+    func startFloatingAnimation(for view: UIView) {
+        let floatDistance: CGFloat = 10 // how far up/down to move
+        let duration: TimeInterval = 1.0 // time for one up or down motion
+
+        UIView.animate(withDuration: duration,
+                       delay: 0,
+                       options: [.autoreverse, .repeat, .allowUserInteraction],
+                       animations: {
+            view.transform = CGAffineTransform(translationX: 0, y: -floatDistance)
+        }, completion: nil)
+    }
+    
     public func setScene() {
         self.scene = IsometricScene()
         scene?.scaleMode = .aspectFill
@@ -448,5 +488,38 @@ extension HomeViewController: UIScrollViewDelegate {
             self.leftImageView.isHidden = self.pageIndex <= 0
             self.rightImageView.isHidden = self.pageIndex >= 6
         }
+    }
+}
+
+final class FloatingView: UIView {
+    var floatDistance: CGFloat = 10
+    var floatDuration: TimeInterval = 1.2
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil { startFloating(distance: floatDistance, duration: floatDuration) }
+        else { stopFloating() }
+    }
+    
+    public func startFloating(distance: CGFloat = 10, duration: TimeInterval = 1.2) {
+        let key = "floating"
+
+        // Avoid stacking duplicate animations
+        if layer.animation(forKey: key) != nil { return }
+
+        let anim = CABasicAnimation(keyPath: "transform.translation.y")
+        anim.fromValue = 0
+        anim.toValue = -distance     // up a bit (negative is up)
+        anim.duration = duration
+        anim.autoreverses = true
+        anim.repeatCount = .infinity
+        anim.isAdditive = true
+        anim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+
+        layer.add(anim, forKey: key)
+    }
+    
+    public func stopFloating() {
+        layer.removeAnimation(forKey: "floating")
     }
 }

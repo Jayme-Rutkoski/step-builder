@@ -13,6 +13,7 @@ class ShopBuyView: UIView {
     
     private var onCompletion: (() -> ())!
     private var price: Int = 0
+    private var itemNumber: Int = 0
     private var viewController: UIViewController!
     
     private lazy var buttonClose: UIButton = {
@@ -29,6 +30,7 @@ class ShopBuyView: UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .black
         view.layer.opacity = 0.8
+        view.isUserInteractionEnabled = false
         
         return view
     }()
@@ -159,6 +161,7 @@ class ShopBuyView: UIView {
     }
     
     private func displayOnViewController(_ viewController: UIViewController, itemNumber: Int, name: String, price: Int) {
+        self.itemNumber = itemNumber
         self.price = price
         self.imageViewItem.image = UIImage(named: "\(itemNumber)")
         self.labelTitle.text = name
@@ -199,6 +202,7 @@ class ShopBuyView: UIView {
         } else {
             let alertVC = UIAlertController(title: "Are you sure?", message: "Do you want to confirm your purchase?", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                SwiftAppDefaults.addShopItem(self.itemNumber)
                 self.viewController.dismiss(animated: true)
                 NotificationCenter.default.post(name: .CurrencyUpdate, object: -5)
                 self.dismiss()

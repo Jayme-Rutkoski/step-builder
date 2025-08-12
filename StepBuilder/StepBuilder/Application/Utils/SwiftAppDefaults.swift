@@ -33,6 +33,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let monstersFound = "AppDefaults.Keys.monstersFound"
         public static let monsterDex = "AppDefaults.Keys.monsterDex"
         public static let monsterInventory = "AppDefaults.Keys.monsterInventory"
+        public static let itemInventory = "AppDefaults.Keys.itemInventory"
         public static let lastDailyGiftDate = "AppDefaults.Keys.lastDailyGiftDate"
         
         // Achievements
@@ -117,6 +118,15 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         }
         set {
             defaults.set(newValue, forKey: Keys.monsterInventory)
+        }
+    }
+    
+    public var itemInventory: [Int] {
+        get {
+            return defaults.array(forKey: Keys.itemInventory) as? [Int] ?? []
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.itemInventory)
         }
     }
     
@@ -276,6 +286,20 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
             monsters.removeAll(where: { $0 == id })
         }
         SwiftAppDefaults.shared.monstersFound = monsters
+    }
+    
+    public static func addShopItem(_ id: Int) {
+        var itemInventory = SwiftAppDefaults.shared.itemInventory
+        itemInventory.append(id)
+        SwiftAppDefaults.shared.itemInventory = itemInventory
+    }
+    
+    public static func consumeShopItem(_ id: Int) {
+        var itemInventory = SwiftAppDefaults.shared.itemInventory
+        if (itemInventory.contains(id)) {
+            itemInventory.firstIndex(where: { $0 == id }).map { itemInventory.remove(at: $0) }
+        }
+        SwiftAppDefaults.shared.itemInventory = itemInventory
     }
 }
 

@@ -1,22 +1,22 @@
 //
-//  ShopItem.swift
+//  InventoryItem.swift
 //  StepBuilder
 //
-//  Created by Jayme Rutkoski on 8/8/25.
+//  Created by Jayme Rutkoski on 8/12/25.
 //
 
-import Foundation
-
-class ShopItem: Codable {
+class InventoryItem {
     var name: String
     var price: Int
     var itemNumber: Int
     var desc: String
+    var quantity: Int
     
-    init(name: String, price: Int, itemNumber: Int, desc: String) {
+    init(name: String, price: Int, itemNumber: Int, desc: String, quantity: Int = 1) {
         self.name = name
         self.price = price
         self.itemNumber = itemNumber
         self.desc = desc
+        self.quantity = quantity
     }
 }

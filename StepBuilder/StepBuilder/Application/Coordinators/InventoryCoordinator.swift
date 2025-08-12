@@ -1,17 +1,16 @@
 //
-//  HomeCoordinator.swift
+//  InventoryCoordinator.swift
 //  StepBuilder
 //
-//  Created by Jayme Rutkoski on 7/9/25.
+//  Created by Jayme Rutkoski on 8/11/25.
 //
 
 import Foundation
 import UIKit
 
-class HomeCoordinator {
+class InventoryCoordinator {
     
     private var viewController: UIViewController
-    private var subVC: UIViewController?
     
     init(viewController: UIViewController) {
         self.viewController = viewController
@@ -20,16 +19,14 @@ class HomeCoordinator {
     public func start() {
         let vc = getViewController()
 
-        self.viewController.show(vc, sender: nil)
+        self.viewController.present(vc, animated: false)
     }
     
     public func getViewController() -> UIViewController {
-        let vc = HomeViewController()
-        vc.setScene()
-        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: CurrencyView(frame: .zero))
+        let vc = InventoryViewController()
+        vc.modalPresentationStyle = .overFullScreen
+        vc.modalTransitionStyle = .crossDissolve
         
         return vc
     }
-    
-    
 }

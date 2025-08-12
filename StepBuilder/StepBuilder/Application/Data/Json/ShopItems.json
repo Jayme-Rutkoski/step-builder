@@ -2,21 +2,25 @@
     {
         "itemNumber": 10,
         "name": "Repel",
-        "price": 5
+        "price": 5,
+        "desc": "This is a repel that keeps away weak monsters."
     },
     {
         "itemNumber": 20,
         "name": "Bag",
-        "price": 3000
+        "price": 30,
+        "desc": "This is a bag to hold your items."
     },
     {
         "itemNumber": 30,
         "name": "Super Repel",
-        "price": 6000
+        "price": 60,
+        "desc": "This is a repel that keeps away weak monsters. This is super strong."
     },
     {
         "itemNumber": 40,
         "name": "Ultra Repel",
-        "price": 8000
+        "price": 50,
+        "desc": "This is a repel that keeps away weak monsters. This is ultra strong."
     }
 ]

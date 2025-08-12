@@ -155,8 +155,8 @@ class CircularProgressGraphView: UIView {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.fromValue = progressLayer.strokeEnd // Start from current progress
         animation.toValue = newProgress // Animate to the new progress
-        animation.duration = 0.5 // Animation duration in seconds
-        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut) // Smooth animation
+        animation.duration = 0.8 // Animation duration in seconds
+        animation.timingFunction = CAMediaTimingFunction(name: .easeOut) // Smooth animation
 
         // Apply the animation
         progressLayer.strokeEnd = newProgress // Update the model layer immediately

@@ -17,6 +17,7 @@ class MonsterFoundView: UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .black
         view.layer.opacity = 0.8
+        view.isUserInteractionEnabled = false
         
         return view
     }()

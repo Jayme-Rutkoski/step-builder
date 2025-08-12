@@ -33,13 +33,17 @@ class MonsterHelper {
             var monsterFound = 99999
             
             if (randomValue <= 3) { // 3% chance to find a legendary monster
-                monsterFound = getLegendaryMonsters().randomElement() ?? 99999
+                monsterFound = getLegendaryMonsters().randomElement() ?? monsterFound
             } else if (randomValue > 3 && randomValue <= 13) { // 10% chance to find a rare monster
-                monsterFound = getRareMonsters().randomElement() ?? 99999
+                monsterFound = getRareMonsters().randomElement() ?? monsterFound
             } else if (randomValue > 13 && randomValue <= 43) { // 30% chance to find an uncommon monster
-                monsterFound = getUncommonMonsters().randomElement() ?? 99999
+                monsterFound = getUncommonMonsters().randomElement() ?? monsterFound
             } else { // 57% change to find a common monster
-                monsterFound = getCommonMonsters().randomElement() ?? 99999
+                monsterFound = getCommonMonsters().randomElement() ?? monsterFound
+            }
+            
+            if (monsterFound == 99999) {
+                return monsterFound
             }
                 
             SwiftAppDefaults.addMonster(monsterFound)
