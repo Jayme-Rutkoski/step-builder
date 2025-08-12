@@ -33,11 +33,16 @@ final public class TabBarCoordinator {
         let shopNC = UINavigationController(rootViewController: ShopCoordinator(viewController: tabBarController).getViewController())
 
         shopNC.tabBarItem = UITabBarItem(title: "Shop", image: UIImage(named: "shop_unselected")?.withRenderingMode(.alwaysTemplate), selectedImage: UIImage(named: "shop_selected")?.withRenderingMode(.alwaysTemplate))
+        
+        let dexNC = UINavigationController(rootViewController: MonsterDexCoordinator(viewController: tabBarController).getViewController())
+
+        dexNC.tabBarItem = UITabBarItem(title: "Dex", image: UIImage(named: "dex_unselected")?.withRenderingMode(.alwaysTemplate), selectedImage: UIImage(named: "dex_selected")?.withRenderingMode(.alwaysTemplate))
 
         tabBarController.viewControllers = [
             homeNC,
             awardsNC,
-            shopNC
+            shopNC,
+            dexNC
         ]
         
         tabBarController.tabBar.tintColor = .white
