@@ -93,9 +93,14 @@ class ShopCollectionViewCell: UICollectionViewCell {
 
     
     func setup() {
+        self.contentView.backgroundColor = .clear
+        
         self.contentView.addSubview(self.viewContainer)
         self.viewContainer.snp.makeConstraints { make in
-            make.edges.equalTo(self.contentView)
+            make.left.equalTo(self.contentView.snp.left)
+            make.right.equalTo(self.contentView.snp.right)
+            make.top.equalTo(self.contentView.snp.top).offset(5)
+            make.bottom.equalTo(self.contentView.snp.bottom).offset(-5)
         }
         
         self.viewContainer.addSubview(self.viewCard)

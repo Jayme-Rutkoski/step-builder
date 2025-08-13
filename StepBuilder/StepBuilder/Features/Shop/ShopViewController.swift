@@ -20,7 +20,7 @@ class ShopViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(ShopCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         
         return collectionView
     }()
@@ -28,7 +28,9 @@ class ShopViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor(hex: 0xe4d2ba)
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped))
         
         self.setup()
     }
@@ -45,10 +47,10 @@ class ShopViewController: UIViewController {
     func setup() {
         self.view.addSubview(self.collectionView)
         self.collectionView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.snp.top).offset(10)
+            make.top.equalTo(self.view.snp.top)
             make.left.equalTo(self.view.snp.left).offset(10)
             make.right.equalTo(self.view.snp.right).offset(-10)
-            make.bottom.equalTo(self.view.snp.bottom).offset(-10)
+            make.bottom.equalTo(self.view.snp.bottom)
         }
         
         self.populateList()
@@ -57,6 +59,10 @@ class ShopViewController: UIViewController {
     func populateList() {
         self.items = Factory.shared().shopItems
         self.collectionView.reloadData()
+    }
+    
+    @objc private func inventoryTapped() {
+        InventoryCoordinator.init(viewController: self).start()
     }
 }
 

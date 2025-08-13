@@ -28,13 +28,13 @@ class CircularProgressGraphView: UIView {
     }
 
     // Customizable properties
-    var trackColor: UIColor = UIColor(red: 0.88, green: 0.88, blue: 0.88, alpha: 1.0) { // #e0e0e0
+    var trackColor: UIColor = .white { // #e0e0e0
         didSet {
             trackLayer.strokeColor = trackColor.cgColor
         }
     }
 
-    var progressColor: UIColor = UIColor(red: 0.29, green: 0.69, blue: 0.31, alpha: 1.0) { // #4CAF50
+    var progressColor: UIColor = UIColor(hex: 0x4CAF50) { // #4CAF50
         didSet {
             progressLayer.strokeColor = progressColor.cgColor
         }

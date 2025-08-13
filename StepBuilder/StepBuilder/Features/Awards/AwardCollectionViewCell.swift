@@ -97,6 +97,8 @@ class AwardCollectionViewCell: UICollectionViewCell {
 
     
     func setup() {
+        self.contentView.backgroundColor = .clear
+        
         self.contentView.addSubview(self.viewContainer)
         self.viewContainer.snp.makeConstraints { make in
             make.edges.equalTo(self.contentView)

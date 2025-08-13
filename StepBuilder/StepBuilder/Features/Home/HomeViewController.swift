@@ -19,11 +19,12 @@ class HomeViewController: UIViewController {
     private var pageIndex: CGFloat = 0.0
     private var isModalDisplayed: Bool = false
     private var modalQueue: [(() -> ())] = []
+    private var updateSteps: Int = 0
     
     private lazy var progressView: UIProgressView = {
         let progressView = UIProgressView(progressViewStyle: .bar)
-        progressView.backgroundColor = UIColor(hex: 0xcc99cc)
-        progressView.tintColor = UIColor(hex: 0x800080)
+        progressView.backgroundColor = .white
+        progressView.tintColor = UIColor(hex: 0x4CAF50)
         
         return progressView
     }()
@@ -66,6 +67,7 @@ class HomeViewController: UIViewController {
     
     private lazy var viewSKContainer: FloatingView = {
         let view = FloatingView(frame: .zero)
+        view.backgroundColor = .clear
         
         return view
     }()
@@ -121,6 +123,17 @@ class HomeViewController: UIViewController {
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        
+        Factory.shared().pedometer.startUpdates(from: Date()) { data, error in
+            if (self.updateSteps == 0) {
+                self.updateSteps = data?.numberOfSteps.intValue ?? 0
+            } else {
+                let newSteps = data?.numberOfSteps.intValue ?? 0
+                self.updateSteps = newSteps - self.updateSteps
+            }
+            self.updateSteps(steps: self.updateSteps)
+            self.updateSteps = data?.numberOfSteps.intValue ?? 0
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -135,7 +148,7 @@ class HomeViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(monsterFound), name: .MonsterFound, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(detectedForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor(hex: 0xe4d2ba)
         
         if UIDevice.current.userInterfaceIdiom == .pad {
             let value = UIInterfaceOrientation.landscapeLeft.rawValue
@@ -160,10 +173,6 @@ class HomeViewController: UIViewController {
             for monsterNumber in SwiftAppDefaults.shared.monstersFound {
                 self.displayMonsterFound(monsterNumber)
             }
-        }
-        
-        Factory.shared().pedometer.startUpdates(from: Date()) { data, error in
-            self.updateSteps(steps: data?.numberOfSteps.intValue ?? 0)
         }
     }
     
@@ -362,7 +371,6 @@ class HomeViewController: UIViewController {
                     previousView = stackView
                     
                     progressView.snp.makeConstraints { make in
-                        make.height.equalTo(250)
                         make.width.equalTo(250)
                     }
                     
@@ -391,8 +399,14 @@ class HomeViewController: UIViewController {
     
     private func updateSteps(steps: Int, updateProgress: Bool = true) {
         Task {
-            await Factory.shared().stepProgressManager.addSteps(steps: steps)
-            let stepsSoFar = steps % Int(Constants.stepsPerLevelUp)
+            var stepsToUse = steps
+            if (updateProgress) {
+                let currentSteps = Factory.shared().stepProgressManager.getCurrentSteps()
+                stepsToUse += currentSteps
+            }
+            
+            await Factory.shared().stepProgressManager.addSteps(steps: stepsToUse)
+            let stepsSoFar = stepsToUse % Int(Constants.stepsPerLevelUp)
             UIView.animate(withDuration: 0.4) {
                 self.progressView.progress = Float(CGFloat(stepsSoFar) / Constants.stepsPerLevelUp)
             }

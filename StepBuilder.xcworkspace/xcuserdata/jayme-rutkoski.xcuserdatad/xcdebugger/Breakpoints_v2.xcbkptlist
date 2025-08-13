@@ -270,8 +270,8 @@
             filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "289"
-            endingLineNumber = "289"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
             landmarkName = "calculateSteps()"
             landmarkType = "7">
          </BreakpointContent>
@@ -417,6 +417,22 @@
             startingLineNumber = "117"
             endingLineNumber = "117"
             landmarkName = "getGridForDate(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3FE391F7-328F-421D-898C-DEBD5A270D84"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
+            landmarkName = "updateSteps(steps:updateProgress:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

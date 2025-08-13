@@ -20,7 +20,7 @@ class MonsterDexViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(MonsterDexCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         
         return collectionView
     }()
@@ -28,7 +28,7 @@ class MonsterDexViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor(hex: 0xe4d2ba)
         
         self.setup()
     }
@@ -45,10 +45,10 @@ class MonsterDexViewController: UIViewController {
     func setup() {
         self.view.addSubview(self.collectionView)
         self.collectionView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.snp.top).offset(10)
+            make.top.equalTo(self.view.snp.top)
             make.left.equalTo(self.view.snp.left).offset(10)
             make.right.equalTo(self.view.snp.right).offset(-10)
-            make.bottom.equalTo(self.view.snp.bottom).offset(-10)
+            make.bottom.equalTo(self.view.snp.bottom)
         }
         
         self.populateList()
@@ -82,7 +82,7 @@ extension MonsterDexViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.size.width
-        let height = 60.0
+        let height = 75.0
         return CGSize(width: width, height: height)
     }
     

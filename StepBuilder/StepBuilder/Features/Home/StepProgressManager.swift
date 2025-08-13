@@ -140,7 +140,7 @@ class StepProgressManager {
         } else {
             print("No existing progress found. Initializing new progress.")
             // If no document exists, save the initial state
-            await saveCurrentProgress()
+            saveCurrentProgress()
         }
         
         // Check for daily reset after loading
@@ -183,7 +183,8 @@ class StepProgressManager {
     // Save a daily grid snapshot to history
     private func saveDailyGridToHistory(steps: Int, date: Date) async {
         HealthHelper.fetchStepCount(forDate: date) { daySteps in
-            SwiftAppDefaults.shared.totalStepsTaken += Int(daySteps)
+            let stepsDiff = Int(daySteps) - steps
+            SwiftAppDefaults.shared.totalStepsTaken += stepsDiff
             self.checkPerfectStreakCount(steps: Int(daySteps), date: date)
             let grid = self.generatePlantProgressGrid(totalSteps: Int(daySteps))
             
@@ -215,6 +216,12 @@ class StepProgressManager {
 
     // Public method to add steps for the current day
     func addSteps(steps: Int) async {
+        if (SwiftAppDefaults.shared.totalStepsTaken == 0) {
+            SwiftAppDefaults.shared.totalStepsTaken += steps
+        } else {
+            SwiftAppDefaults.shared.totalStepsTaken += steps - currentDaySteps
+        }
+            
         currentGrid = generatePlantProgressGrid(totalSteps: steps)
         currentDaySteps = steps
         saveCurrentProgress()

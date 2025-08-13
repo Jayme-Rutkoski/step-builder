@@ -30,7 +30,7 @@ class ShopBuyView: UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .black
         view.layer.opacity = 0.8
-        view.isUserInteractionEnabled = false
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(buttonClose_TouchUpInside)))
         
         return view
     }()
@@ -171,7 +171,7 @@ class ShopBuyView: UIView {
         self.setup(viewController: viewController)
         viewController.view.layoutIfNeeded()
         viewController.view.bringSubviewToFront(self)
-        
+
         UIView.animate(withDuration: 0.3, animations: {
             self.layer.opacity = 1.0
         })

@@ -18,7 +18,7 @@ class CurrencyView: UIView {
         label.font = FontHelper.getBoldFont(size: 16)
         self.currentCoins = SwiftAppDefaults.shared.coins
         label.count(from: 0, to: CGFloat(SwiftAppDefaults.shared.coins), withDuration: 0.3)
-        label.textColor = .black
+        label.textColor = .white
         label.format = "%d"
         
         return label
@@ -51,19 +51,18 @@ class CurrencyView: UIView {
     }
     
     private func setup() {
-        self.stackView.addArrangedSubview(self.imageViewCoin)
-        self.imageViewCoin.snp.makeConstraints { make in
-            make.width.equalTo(25)
-            make.height.equalTo(25)
-        }
-        
-        self.stackView.addArrangedSubview(self.labelCurrency)
-            
         self.addSubview(self.stackView)
         self.stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.height.equalTo(30)
         }
+        
+        self.stackView.addArrangedSubview(self.imageViewCoin)
+        self.imageViewCoin.snp.makeConstraints { make in
+            make.width.equalTo(25)
+        }
+        
+        self.stackView.addArrangedSubview(self.labelCurrency)
     }
     
     @objc private func currencyUpdate(_ notification: Notification) {

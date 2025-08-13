@@ -20,7 +20,7 @@ class AwardsViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(AwardCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         
         return collectionView
     }()
@@ -28,7 +28,7 @@ class AwardsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor(hex: 0xe4d2ba)
         
         self.setup()
     }

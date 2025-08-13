@@ -23,7 +23,7 @@ class IsometricScene: SKScene {
     
     override func didMove(to view: SKView) {
         self.restartScene()
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(hex: 0xe4d2ba)
         size = view.frame.size
         scaleMode = .aspectFill
         

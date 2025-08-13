@@ -47,6 +47,7 @@ final public class TabBarCoordinator {
         
         tabBarController.tabBar.tintColor = .white
         tabBarController.tabBar.unselectedItemTintColor = .white
+        tabBarController.tabBar.isTranslucent = false
         
         let normalColor: UIColor = .white
         let selectedColor: UIColor = .white
@@ -54,7 +55,7 @@ final public class TabBarCoordinator {
         let selectedTextAttributes: [NSAttributedString.Key : Any] = [.font: FontHelper.getFont(size: 12), NSAttributedString.Key.foregroundColor: selectedColor]
         let tabBarAppearance: UITabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithDefaultBackground()
-        tabBarAppearance.backgroundColor = .black
+        tabBarAppearance.backgroundColor = UIColor(hex: 0xa64ca6)
         
         // Stacked Layout Appearance
         tabBarAppearance.stackedLayoutAppearance.normal.iconColor = normalColor
@@ -82,6 +83,14 @@ final public class TabBarCoordinator {
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         }
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.titleTextAttributes = [.font: FontHelper.getBoldFont(size: 20), .foregroundColor: UIColor.white]
+        appearance.backgroundColor = UIColor(hex: 0xa64ca6)
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UIBarButtonItem.appearance().tintColor = UIColor.white
         
         RootViewController.shared.update(to: tabBarController)
     }

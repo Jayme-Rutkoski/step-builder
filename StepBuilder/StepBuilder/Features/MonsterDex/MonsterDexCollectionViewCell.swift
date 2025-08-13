@@ -31,7 +31,7 @@ class MonsterDexCollectionViewCell: UICollectionViewCell {
     
     private var imageViewFound: UIImageView = {
         let imageView = UIImageView(frame: .zero)
-        imageView.image = UIImage(named: "award_monsters_found")
+        imageView.image = UIImage(named: "emblem")
         imageView.layer.cornerRadius = 20
         imageView.contentMode = .scaleToFill
         
@@ -85,9 +85,14 @@ class MonsterDexCollectionViewCell: UICollectionViewCell {
 
     
     func setup() {
+        self.contentView.backgroundColor = .clear
+        
         self.contentView.addSubview(self.viewCard)
         self.viewCard.snp.makeConstraints { make in
-            make.edges.equalTo(self.contentView)
+            make.left.equalTo(self.contentView.snp.left)
+            make.right.equalTo(self.contentView.snp.right)
+            make.top.equalTo(self.contentView.snp.top).offset(5)
+            make.bottom.equalTo(self.contentView.snp.bottom).offset(-5)
         }
         
         self.viewCard.addSubview(self.viewCircle)
@@ -131,11 +136,11 @@ class MonsterDexCollectionViewCell: UICollectionViewCell {
         self.labelName.text = name
         self.imageView.image = UIImage(named: "\(id)")
         self.imageViewFound.isHidden = !hasSeen
-        var indexText = "\(id)"
-        if (id < 10) {
-            indexText = "00\(id)"
-        } else if (id < 100) {
-            indexText = "0\(id)"
+        var indexText = "\(indexNum)"
+        if (indexNum < 10) {
+            indexText = "00\(indexNum)"
+        } else if (indexNum < 100) {
+            indexText = "0\(indexNum)"
         }
         self.labelIndex.text = "No. \(indexText)"
     }
