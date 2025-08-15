@@ -35,6 +35,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let monsterInventory = "AppDefaults.Keys.monsterInventory"
         public static let itemInventory = "AppDefaults.Keys.itemInventory"
         public static let lastDailyGiftDate = "AppDefaults.Keys.lastDailyGiftDate"
+        public static let showMonsterFindSummary = "AppDefaults.Keys.showMonsterFindSummary"
         
         // Achievements
         public static let monsterFindCount = "AppDefaults.Keys.monsterFindCount"
@@ -193,6 +194,15 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         }
     }
     
+    public var showMonsterFindSummary: Bool {
+        get {
+            return defaults.bool(forKey: Keys.showMonsterFindSummary)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.showMonsterFindSummary)
+        }
+    }
+    
     public var has7DayLoginStreak: Bool {
         get {
             return defaults.bool(forKey: Keys.has7DayLoginStreak)
@@ -264,12 +274,9 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         if (!monsterDex.contains(id)) {
             monsterDex.append(id)
             SwiftAppDefaults.shared.uniqueMonsterFindCount += 1
-            
-            if (!monstersFound.contains(id)) {
-                monstersFound.append(id)
-            }
         }
         
+        monstersFound.append(id)
         SwiftAppDefaults.shared.monsterFindCount += 1
         
         monsterInventory.append(id)
@@ -283,8 +290,14 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
     public static func removeMonster(_ id: Int) {
         var monsters = SwiftAppDefaults.shared.monstersFound
         if (monsters.contains(id)) {
-            monsters.removeAll(where: { $0 == id })
+            monsters.firstIndex(where: { $0 == id }).map { monsters.remove(at: $0) }
         }
+        SwiftAppDefaults.shared.monstersFound = monsters
+    }
+    
+    public static func removeAllMonsters() {
+        var monsters = SwiftAppDefaults.shared.monstersFound
+        monsters.removeAll()
         SwiftAppDefaults.shared.monstersFound = monsters
     }
     

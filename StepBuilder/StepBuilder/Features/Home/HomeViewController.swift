@@ -20,6 +20,7 @@ class HomeViewController: UIViewController {
     private var isModalDisplayed: Bool = false
     private var modalQueue: [(() -> ())] = []
     private var updateSteps: Int = 0
+    private var isDisplayingSummary: Bool = false
     
     private lazy var progressView: UIProgressView = {
         let progressView = UIProgressView(progressViewStyle: .bar)
@@ -169,7 +170,7 @@ class HomeViewController: UIViewController {
         }
         
         
-        if (SwiftAppDefaults.shared.monstersFound.count > 0) {
+        if (SwiftAppDefaults.shared.monstersFound.count > 0 && !SwiftAppDefaults.shared.showMonsterFindSummary) {
             for monsterNumber in SwiftAppDefaults.shared.monstersFound {
                 self.displayMonsterFound(monsterNumber)
             }
@@ -393,6 +394,7 @@ class HomeViewController: UIViewController {
                 }
                 
                 self.updateSteps(steps: Int(dailySteps.last ?? 0), updateProgress: false)
+                self.tryDisplaySummary()
             }
         }
     }
@@ -425,11 +427,13 @@ class HomeViewController: UIViewController {
     }
     
     private func displayMonsterFound(_ monsterNumber: Int) {
-        SwiftAppDefaults.removeMonster(monsterNumber)
-        DispatchQueue.main.async {
-            self.queueUpNextModal {
-                MonsterFoundView().displayView(self, monsterNumber: monsterNumber) {
-                    self.modalDismissed()
+        if (!SwiftAppDefaults.shared.showMonsterFindSummary) {
+            SwiftAppDefaults.removeMonster(monsterNumber)
+            DispatchQueue.main.async {
+                self.queueUpNextModal {
+                    MonsterFoundView().displayView(self, monsterNumber: monsterNumber) {
+                        self.modalDismissed()
+                    }
                 }
             }
         }
@@ -437,7 +441,7 @@ class HomeViewController: UIViewController {
     
     @objc private func monsterFound(notification: Notification) {
         if let monsterNum = notification.object as? Int {
-            if (SwiftAppDefaults.shared.monstersFound.contains(monsterNum)) {
+            if (SwiftAppDefaults.shared.monstersFound.contains(monsterNum) && !SwiftAppDefaults.shared.showMonsterFindSummary) {
                 self.displayMonsterFound(monsterNum)
             }
         }
@@ -450,6 +454,24 @@ class HomeViewController: UIViewController {
                 self.viewSKContainer.startFloating()
             }
         }
+    }
+    
+    private func tryDisplaySummary() {
+        if (SwiftAppDefaults.shared.showMonsterFindSummary && SwiftAppDefaults.shared.monstersFound.count > 0) {
+            print("DISPLAY SUMMARY")
+            if (!isDisplayingSummary) {
+                self.isDisplayingSummary = true
+                MonsterSummaryView().displayView(self) {
+                    SwiftAppDefaults.removeAllMonsters()
+                    SwiftAppDefaults.shared.showMonsterFindSummary = false
+                    self.isDisplayingSummary = false
+                }
+            }
+        } else {
+            SwiftAppDefaults.shared.showMonsterFindSummary = false
+        }
+        
+        
     }
     
     private func modalDismissed() {

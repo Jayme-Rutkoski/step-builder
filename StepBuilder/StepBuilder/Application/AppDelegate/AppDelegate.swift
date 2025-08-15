@@ -15,6 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        //SwiftAppDefaults.shared.monstersFound = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+        //SwiftAppDefaults.shared.monstersFound = [10, 20]
+        
         FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -53,11 +56,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         SwiftAppDefaults.shared.lastOpened = .now
+        SwiftAppDefaults.shared.showMonsterFindSummary = true
         
         MainCoordinator().start()
+        
+        if let statusBarFrame = window?.windowScene?.statusBarManager?.statusBarFrame {
+            let statusBar = UIView(frame: CGRect(x: 0, y: 0, width: statusBarFrame.width, height: window?.safeAreaInsets.top ?? statusBarFrame.height))
+            statusBar.backgroundColor = UIColor(hex: 0xa64ca6)
+            window?.addSubview(statusBar)
+        }
         
         return true
     }
 
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        SwiftAppDefaults.shared.showMonsterFindSummary = true
+    }
 }
 
