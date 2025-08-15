@@ -145,6 +145,7 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("SHOW SUMMARY: \(SwiftAppDefaults.shared.showMonsterFindSummary)")
         
         NotificationCenter.default.addObserver(self, selector: #selector(monsterFound), name: .MonsterFound, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(detectedForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -394,7 +395,6 @@ class HomeViewController: UIViewController {
                 }
                 
                 self.updateSteps(steps: Int(dailySteps.last ?? 0), updateProgress: false)
-                self.tryDisplaySummary()
             }
         }
     }
@@ -422,6 +422,8 @@ class HomeViewController: UIViewController {
                 let currentSteps = Factory.shared().stepProgressManager.getCurrentSteps()
                 self.todayStepLabel?.count(from: currentCount, to: CGFloat(currentSteps), withDuration: 0.8)
                 self.todayProgressView?.progress = CGFloat(currentSteps) / self.stepGoal
+            } else {
+                self.tryDisplaySummary()
             }
         }
     }
@@ -457,6 +459,7 @@ class HomeViewController: UIViewController {
     }
     
     private func tryDisplaySummary() {
+        print("TRY TO DISPLAY SUMMARY")
         if (SwiftAppDefaults.shared.showMonsterFindSummary && SwiftAppDefaults.shared.monstersFound.count > 0) {
             print("DISPLAY SUMMARY")
             if (!isDisplayingSummary) {

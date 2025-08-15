@@ -45,6 +45,25 @@ class MonsterSummaryCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    
+    private lazy var viewNew: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = UIColor(hex: 0xE50000)
+        view.layer.cornerRadius = 10
+        
+        return view
+    }()
+    
+    private lazy var labelNew: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = FontHelper.getBoldFont(size: 12)
+        label.text = "NEW"
+        label.textAlignment = .center
+        label.textColor = .white
+        
+        return label
+    }()
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
@@ -82,7 +101,21 @@ class MonsterSummaryCollectionViewCell: UICollectionViewCell {
             make.bottom.equalTo(self.viewCard.snp.bottom).offset(-10)
             make.width.equalTo(self.imageView.snp.height)
         }
-
+        
+        self.viewCard.addSubview(self.viewNew)
+        self.viewNew.snp.makeConstraints { make in
+            make.centerY.equalTo(self.imageView.snp.top).offset(3)
+            make.centerX.equalTo(self.imageView.snp.right).offset(-3)
+            make.height.equalTo(20)
+        }
+        
+        self.viewNew.addSubview(self.labelNew)
+        self.labelNew.snp.makeConstraints { make in
+            make.top.equalTo(self.viewNew.snp.top).offset(2)
+            make.left.equalTo(self.viewNew.snp.left).offset(5)
+            make.right.equalTo(self.viewNew.snp.right).offset(-5)
+            make.bottom.equalTo(self.viewNew.snp.bottom).offset(-2)
+        }
         
         self.viewCard.addSubview(self.labelQuantity)
         self.labelQuantity.snp.makeConstraints { make in
@@ -102,5 +135,6 @@ class MonsterSummaryCollectionViewCell: UICollectionViewCell {
         self.labelName.text = name
         self.imageView.image = UIImage(named: "\(id)")
         self.labelQuantity.text = "x\(quantity)"
+        self.viewNew.isHidden = !isNew
     }
 }

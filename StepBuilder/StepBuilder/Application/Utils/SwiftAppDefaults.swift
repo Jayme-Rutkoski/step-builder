@@ -30,6 +30,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let shownOnboarding = "AppDefaults.Keys.shownOnboarding"
         public static let userId = "AppDefaults.Keys.userId"
         public static let coins = "AppDefaults.Keys.coins"
+        public static let newMonsters = "AppDefaults.Keys.newMonsters"
         public static let monstersFound = "AppDefaults.Keys.monstersFound"
         public static let monsterDex = "AppDefaults.Keys.monsterDex"
         public static let monsterInventory = "AppDefaults.Keys.monsterInventory"
@@ -101,6 +102,15 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
             return defaults.integer(forKey: Keys.coins)
         } set {
             defaults.set(newValue, forKey: Keys.coins)
+        }
+    }
+    
+    public var newMonsters: [Int] {
+        get {
+            return defaults.array(forKey: Keys.newMonsters) as? [Int] ?? []
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.newMonsters)
         }
     }
     
@@ -270,9 +280,11 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         var monsterDex = SwiftAppDefaults.shared.monsterDex
         var monstersFound = SwiftAppDefaults.shared.monstersFound
         var monsterInventory = SwiftAppDefaults.shared.monsterInventory
+        var newMonsters = SwiftAppDefaults.shared.newMonsters
         
         if (!monsterDex.contains(id)) {
             monsterDex.append(id)
+            newMonsters.append(id)
             SwiftAppDefaults.shared.uniqueMonsterFindCount += 1
         }
         
@@ -285,20 +297,28 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         SwiftAppDefaults.shared.monsterDex = monsterDex
         SwiftAppDefaults.shared.monstersFound = monstersFound
         SwiftAppDefaults.shared.monsterInventory = monsterInventory
+        SwiftAppDefaults.shared.newMonsters = newMonsters
     }
     
     public static func removeMonster(_ id: Int) {
         var monsters = SwiftAppDefaults.shared.monstersFound
+        var newMonsters = SwiftAppDefaults.shared.newMonsters
+        
         if (monsters.contains(id)) {
             monsters.firstIndex(where: { $0 == id }).map { monsters.remove(at: $0) }
+            newMonsters.firstIndex(where: { $0 == id }).map { newMonsters.remove(at: $0) }
         }
         SwiftAppDefaults.shared.monstersFound = monsters
+        SwiftAppDefaults.shared.newMonsters = newMonsters
     }
     
     public static func removeAllMonsters() {
         var monsters = SwiftAppDefaults.shared.monstersFound
+        var newMonsters = SwiftAppDefaults.shared.newMonsters
         monsters.removeAll()
+        newMonsters.removeAll()
         SwiftAppDefaults.shared.monstersFound = monsters
+        SwiftAppDefaults.shared.newMonsters = newMonsters
     }
     
     public static func addShopItem(_ id: Int) {

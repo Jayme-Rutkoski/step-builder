@@ -14,11 +14,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        //SwiftAppDefaults.shared.monstersFound = [10, 20, 30, 40, 50, 60, 70, 80, 90]
-        //SwiftAppDefaults.shared.monstersFound = [10, 20]
-        
         FirebaseApp.configure()
+        SwiftAppDefaults.shared.showMonsterFindSummary = true
+        print("SHOW SUMMARY: \(SwiftAppDefaults.shared.showMonsterFindSummary)")
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = RootViewController.shared
@@ -56,7 +54,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         SwiftAppDefaults.shared.lastOpened = .now
-        SwiftAppDefaults.shared.showMonsterFindSummary = true
         
         MainCoordinator().start()
         

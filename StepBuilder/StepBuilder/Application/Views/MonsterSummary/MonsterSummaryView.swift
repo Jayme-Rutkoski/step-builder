@@ -51,7 +51,7 @@ class MonsterSummaryView: UIView {
     private lazy var labelTitle: UILabel = {
         let label = UILabel(frame: .zero)
         label.font = FontHelper.getBoldFont(size: 20)
-        label.text = "Monsters Found While You Were Gone"
+        label.text = "Monsters Found"
         label.textAlignment = .center
         label.textColor = .white
         label.numberOfLines = 0
@@ -151,7 +151,7 @@ class MonsterSummaryView: UIView {
         print("MONSTERS FOUND: \(SwiftAppDefaults.shared.monstersFound)")
         let filteredMonsters = Factory.shared().monsters.filter { SwiftAppDefaults.shared.monstersFound.contains($0.id) }
         let monsterCounts = Dictionary(grouping: filteredMonsters, by: { $0.id })
-        let monsterSummaries = filteredMonsters.map { MonsterSummary.init(monster: $0, quantity: monsterCounts[$0.id]?.count ?? 0, isNew: true)}
+        let monsterSummaries = filteredMonsters.map { MonsterSummary.init(monster: $0, quantity: monsterCounts[$0.id]?.count ?? 0, isNew: SwiftAppDefaults.shared.newMonsters.contains($0.id))}
         self.items = monsterSummaries
         viewController.view.addSubview(self)
         self.snp.makeConstraints { make in
