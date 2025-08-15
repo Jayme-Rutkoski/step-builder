@@ -273,7 +273,7 @@
             startingLineNumber = "299"
             endingLineNumber = "299"
             landmarkName = "calculateSteps()"
-            landmarkType = "7">
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -433,7 +433,7 @@
             startingLineNumber = "423"
             endingLineNumber = "423"
             landmarkName = "updateSteps(steps:updateProgress:)"
-            landmarkType = "7">
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -449,7 +449,7 @@
             startingLineNumber = "433"
             endingLineNumber = "433"
             landmarkName = "displayMonsterFound(_:)"
-            landmarkType = "7">
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -481,7 +481,7 @@
             startingLineNumber = "466"
             endingLineNumber = "466"
             landmarkName = "tryDisplaySummary()"
-            landmarkType = "7">
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -497,7 +497,7 @@
             startingLineNumber = "471"
             endingLineNumber = "471"
             landmarkName = "tryDisplaySummary()"
-            landmarkType = "7">
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

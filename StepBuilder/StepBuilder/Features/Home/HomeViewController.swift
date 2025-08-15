@@ -160,7 +160,7 @@ class HomeViewController: UIViewController {
         
         self.setup()
         
-        if (!Date.now.isSameDay(as: SwiftAppDefaults.shared.lastDailyGiftDate)) {
+        if (!Date.now.isSameDay(as: SwiftAppDefaults.shared.lastDailyGiftDate) && !Date.now.isSameDay(as: SwiftAppDefaults.shared.installDate)) {
             self.queueUpNextModal {
                 DailyRewardView().displayView(self) {
                     SwiftAppDefaults.shared.lastDailyGiftDate = Date.now
