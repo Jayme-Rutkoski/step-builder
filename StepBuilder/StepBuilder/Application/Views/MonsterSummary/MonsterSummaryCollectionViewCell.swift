@@ -97,7 +97,7 @@ class MonsterSummaryCollectionViewCell: UICollectionViewCell {
         self.viewCard.addSubview(self.imageView)
         self.imageView.snp.makeConstraints { make in
             make.top.equalTo(self.viewCard.snp.top).offset(10)
-            make.left.equalTo(self.viewCard.snp.left).offset(10)
+            make.left.equalTo(self.viewCard.snp.left).offset(12)
             make.bottom.equalTo(self.viewCard.snp.bottom).offset(-10)
             make.width.equalTo(self.imageView.snp.height)
         }
@@ -119,7 +119,7 @@ class MonsterSummaryCollectionViewCell: UICollectionViewCell {
         
         self.viewCard.addSubview(self.labelQuantity)
         self.labelQuantity.snp.makeConstraints { make in
-            make.right.equalTo(self.viewCard.snp.right).offset(-10)
+            make.right.equalTo(self.viewCard.snp.right).offset(-12)
             make.centerY.equalTo(self.viewCard.snp.centerY)
         }
         
