@@ -209,7 +209,7 @@ extension MonsterSummaryView: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! MonsterSummaryCollectionViewCell
         
         let item = self.items[indexPath.row]
-        cell.configure(with: item.monster.id, name: item.monster.name, quantity: item.quantity, isNew: true)
+        cell.configure(with: item.monster.id, name: item.monster.name, quantity: item.quantity, isNew: item.isNew)
         
         return cell
     }

@@ -72,7 +72,7 @@ class IsometricScene: SKScene {
                             for z in 0 ... 1 {
                                 var noneFound = false
                                 let spriteSize = CGSize(width: 60, height: 60)
-                                var sprite = SKSpriteNode(imageNamed: "soil_tile")
+                                var sprite = SKSpriteNode(imageNamed: "crystal_tile")
                                 sprite.name = "soil"
                                 
                                 if (z == 0 && self.isLoaded) {

@@ -500,5 +500,81 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C495FC14-E21D-4046-8B74-228B8D00D632"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
+            landmarkName = "removeMonster(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "C495FC14-E21D-4046-8B74-228B8D00D632 - e521ea03eb05b8c0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static StepBuilder.SwiftAppDefaults.removeMonster(Swift.Int) -&gt; ()"
+                  moduleName = "StepBuilder.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jayme-rutkoski/Development/Sandhills/GitHub/step-builder/StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "308"
+                  endingLineNumber = "308">
+               </Location>
+               <Location
+                  uuid = "C495FC14-E21D-4046-8B74-228B8D00D632 - 9de257774c8858b1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int) -&gt; Swift.Bool in static StepBuilder.SwiftAppDefaults.removeMonster(Swift.Int) -&gt; ()"
+                  moduleName = "StepBuilder.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jayme-rutkoski/Development/Sandhills/GitHub/step-builder/StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "308"
+                  endingLineNumber = "308">
+               </Location>
+               <Location
+                  uuid = "C495FC14-E21D-4046-8B74-228B8D00D632 - 5ef1da22d3ee34b1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Int) -&gt; Swift.Int in static StepBuilder.SwiftAppDefaults.removeMonster(Swift.Int) -&gt; ()"
+                  moduleName = "StepBuilder.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jayme-rutkoski/Development/Sandhills/GitHub/step-builder/StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "308"
+                  endingLineNumber = "308">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "42012EBC-CE19-4C85-A8BD-D2A55DB0F299"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "280"
+            endingLineNumber = "280"
+            landmarkName = "addMonster(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
