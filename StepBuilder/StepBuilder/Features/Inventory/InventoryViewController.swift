@@ -16,6 +16,16 @@ class InventoryViewController: UIViewController {
     private var columns: Int = 1
     private let desiredTile: CGFloat = 60
     
+    private lazy var labelTitle: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = FontHelper.getBoldFont(size: 24)
+        label.text = "Inventory"
+        label.textColor = .black
+        label.textAlignment = .center
+        
+        return label
+    }()
+    
     private var viewOpacity: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = .black
@@ -104,13 +114,19 @@ class InventoryViewController: UIViewController {
         self.buttonClose.snp.makeConstraints { make in
             make.top.equalTo(self.viewContainer.snp.top).offset(10)
             make.right.equalTo(self.viewContainer.snp.right).offset(-10)
-            make.height.equalTo(25)
-            make.width.equalTo(25)
+            make.height.equalTo(20)
+            make.width.equalTo(20)
+        }
+        
+        self.viewContainer.addSubview(self.labelTitle)
+        self.labelTitle.snp.makeConstraints { make in
+            make.top.equalTo(self.viewContainer.snp.top).offset(10)
+            make.centerX.equalTo(self.viewContainer.snp.centerX)
         }
         
         self.viewContainer.addSubview(self.collectionView)
         self.collectionView.snp.makeConstraints { make in
-            make.top.equalTo(self.buttonClose.snp.bottom).offset(5)
+            make.top.equalTo(self.labelTitle.snp.bottom).offset(5)
             make.left.equalTo(self.viewContainer.snp.left).offset(10)
             make.right.equalTo(self.viewContainer.snp.right).offset(-10)
             make.bottom.equalTo(self.viewContainer.snp.bottom).offset(-10)

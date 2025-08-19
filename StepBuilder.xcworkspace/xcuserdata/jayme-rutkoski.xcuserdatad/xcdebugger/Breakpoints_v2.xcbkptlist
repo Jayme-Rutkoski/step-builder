@@ -564,7 +564,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "42012EBC-CE19-4C85-A8BD-D2A55DB0F299"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
