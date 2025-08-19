@@ -94,7 +94,7 @@ extension ShopViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = self.items[indexPath.row]
-        ShopBuyView().displayView(self, itemNumber: item.itemNumber, name: item.name, price: item.price) {
+        ShopBuyView().displayView(self, itemNumber: item.itemNumber, name: item.name, price: item.price, desc: item.desc) {
             
         }
     }

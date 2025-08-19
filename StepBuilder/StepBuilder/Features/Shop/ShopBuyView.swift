@@ -43,6 +43,16 @@ class ShopBuyView: UIView {
         return label
     }()
     
+    private lazy var labelDescription: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = FontHelper.getFont(size: 14)
+        label.textColor = .black
+        label.textAlignment = .natural
+        label.numberOfLines = 0
+        
+        return label
+    }()
+    
     private lazy var viewTitle: UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(hex: 0x99cc99)
@@ -144,12 +154,19 @@ class ShopBuyView: UIView {
             make.width.equalTo(100)
         }
         
+        self.viewBackground.addSubview(self.labelDescription)
+        self.labelDescription.snp.makeConstraints { make in
+            make.left.equalTo(self.viewBackground.snp.left).offset(40)
+            make.right.equalTo(self.viewBackground.snp.right).offset(-40)
+            make.bottom.equalTo(self.buttonBuy.snp.top).offset(-20)
+        }
+        
         self.viewBackground.addSubview(self.stackViewItem)
         self.stackViewItem.snp.makeConstraints { make in
             make.top.equalTo(self.viewTitle.snp.bottom).offset(20)
             make.left.equalTo(self.viewBackground.snp.left).offset(40)
             make.right.equalTo(self.viewBackground.snp.right).offset(-40)
-            make.bottom.equalTo(self.buttonBuy.snp.top).offset(-20)
+            make.bottom.equalTo(self.labelDescription.snp.top).offset(-20)
             make.width.equalTo(self.stackViewItem.snp.height)
         }
         
@@ -160,11 +177,12 @@ class ShopBuyView: UIView {
         }
     }
     
-    private func displayOnViewController(_ viewController: UIViewController, itemNumber: Int, name: String, price: Int) {
+    private func displayOnViewController(_ viewController: UIViewController, itemNumber: Int, name: String, price: Int, desc: String) {
         self.itemNumber = itemNumber
         self.price = price
         self.imageViewItem.image = UIImage(named: "\(itemNumber)")
         self.labelTitle.text = name
+        self.labelDescription.text = desc
         self.buttonBuy.setTitle("\(price)", for: .normal)
         self.buttonBuy.setImage(UIImage(named: "coin"), for: .normal)
         viewController.view.addSubview(self)
@@ -215,11 +233,11 @@ class ShopBuyView: UIView {
         }
     }
     
-    public func displayView(_ viewController: UIViewController, itemNumber: Int, name: String, price: Int, onCompletion: @escaping (() -> ())) {
+    public func displayView(_ viewController: UIViewController, itemNumber: Int, name: String, price: Int, desc: String, onCompletion: @escaping (() -> ())) {
         self.layer.opacity = 0.0
         self.viewController = viewController
         self.onCompletion = onCompletion
-        self.displayOnViewController(viewController, itemNumber: itemNumber, name: name, price: price)
+        self.displayOnViewController(viewController, itemNumber: itemNumber, name: name, price: price, desc: desc)
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
