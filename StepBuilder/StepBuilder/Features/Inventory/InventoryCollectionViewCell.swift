@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class InventoryCollectionViewCell: UICollectionViewCell {
+class InventoryCollectionViewCell: GridCell {
     
     private let imageHeight: CGFloat = 50
     private let quantityHeight: CGFloat = 20
@@ -64,10 +64,10 @@ class InventoryCollectionViewCell: UICollectionViewCell {
     func setup() {
         self.contentView.addSubview(self.imageView)
         self.imageView.snp.makeConstraints { make in
-            make.top.equalTo(self.contentView.snp.top).offset(5)
-            make.left.equalTo(self.contentView.snp.left).offset(5)
-            make.right.equalTo(self.contentView.snp.right).offset(-5)
-            make.bottom.equalTo(self.contentView.snp.bottom).offset(-5)
+            make.top.equalTo(self.contentView.snp.top)//.offset(5)
+            make.left.equalTo(self.contentView.snp.left)//.offset(5)
+            make.right.equalTo(self.contentView.snp.right)//.offset(-5)
+            make.bottom.equalTo(self.contentView.snp.bottom)//.offset(-5)
             make.height.equalTo(self.imageHeight)
             make.width.equalTo(self.imageHeight)
         }
@@ -89,7 +89,8 @@ class InventoryCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(with itemNumber: Int, quantity: Int) {
+    func configure(with itemNumber: Int, quantity: Int, indexPath: IndexPath, columns: Int, totalItems: Int) {
+        super.configure(indexPath: indexPath, columns: columns, totalItems: totalItems)
         self.imageView.image = UIImage(named: "\(itemNumber)")
         self.viewQuantity.isHidden = quantity <= 1
         self.labelQuantity.text = "\(quantity)"

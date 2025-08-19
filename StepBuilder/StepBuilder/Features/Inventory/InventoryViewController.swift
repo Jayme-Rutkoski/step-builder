@@ -13,6 +13,8 @@ class InventoryViewController: UIViewController {
     
     private var items: [InventoryItem] = []
     var myViewHeightConstraint: Constraint?
+    private var columns: Int = 1
+    private let desiredTile: CGFloat = 60
     
     private var viewOpacity: UIView = {
         let view = UIView(frame: .zero)
@@ -26,22 +28,25 @@ class InventoryViewController: UIViewController {
     private var viewContainer: UIView = {
         let view = UIView(frame: .zero)
         view.layer.cornerRadius = 10
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(hex: 0xcc99cc)
         
         return view
     }()
-    
+
     private lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(InventoryCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .white
-        
-        return collectionView
+        flowLayout.minimumInteritemSpacing = 0         // <— no gaps
+        flowLayout.minimumLineSpacing = 0              // <— no gaps
+        flowLayout.sectionInset = .zero                // <— flush edges
+
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        cv.dataSource = self
+        cv.delegate = self
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.register(InventoryCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        cv.showsVerticalScrollIndicator = false
+        cv.backgroundColor = .clear
+        return cv
     }()
     
     private lazy var buttonClose: UIButton = {
@@ -69,7 +74,6 @@ class InventoryViewController: UIViewController {
         
         self.collectionView.layoutIfNeeded()
         self.myViewHeightConstraint?.update(offset: self.collectionView.contentSize.height + 50)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -107,8 +111,8 @@ class InventoryViewController: UIViewController {
         self.viewContainer.addSubview(self.collectionView)
         self.collectionView.snp.makeConstraints { make in
             make.top.equalTo(self.buttonClose.snp.bottom).offset(5)
-            make.left.equalTo(self.viewContainer.snp.left)
-            make.right.equalTo(self.viewContainer.snp.right)
+            make.left.equalTo(self.viewContainer.snp.left).offset(10)
+            make.right.equalTo(self.viewContainer.snp.right).offset(-10)
             make.bottom.equalTo(self.viewContainer.snp.bottom).offset(-10)
         }
         
@@ -153,26 +157,38 @@ extension InventoryViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.items.count
+        items.count
     }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! InventoryCollectionViewCell
-        
+        // Optional styling per your taste
+        cell.lineColor = .black//.tertiaryLabel
+        cell.lineWidth = 1 / UIScreen.main.scale
+        cell.showsBevel = true
+        cell.bevelAlpha = 0.22
+
         let item = self.items[indexPath.row]
-        cell.configure(with: item.itemNumber, quantity: item.quantity)
-        
+        cell.configure(with: item.itemNumber, quantity: item.quantity, indexPath: indexPath, columns: columns, totalItems: items.count)
         return cell
     }
 }
 extension InventoryViewController: UICollectionViewDelegateFlowLayout {
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = 60
-        let height = 60
-        return CGSize(width: width, height: height)
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width
+        let tile = max(1, desiredTile) // safety
+        let newCols = max(1, Int(floor(width / tile)))
+        self.columns = newCols
+        let itemW = floor(width / CGFloat(max(columns, 1)))
+        // fixed height — or make it equal to width for squares
+       // let width = collectionView.bounds.width
+       
+        return CGSize(width: itemW, height: desiredTile)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
