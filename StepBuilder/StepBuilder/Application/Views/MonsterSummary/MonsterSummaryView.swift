@@ -149,10 +149,28 @@ class MonsterSummaryView: UIView {
     
     private func displayOnViewController(_ viewController: UIViewController) {
         print("MONSTERS FOUND: \(SwiftAppDefaults.shared.monstersFound)")
-        let filteredMonsters = Factory.shared().monsters.filter { SwiftAppDefaults.shared.monstersFound.contains($0.id) }
+        let foundIDs = SwiftAppDefaults.shared.monstersFound           // e.g. [3, 7, 3, 3, 9]
+        let newIDs = Set(SwiftAppDefaults.shared.newMonsters)
+        let counts = foundIDs.reduce(into: [Int: Int]()) { dict, id in
+            dict[id, default: 0] += 1
+        }
+        
+        let monstersByID = Dictionary(uniqueKeysWithValues:
+            Factory.shared().monsters.map { ($0.id, $0) }
+        )
+        
+        let monsterSummaries: [MonsterSummary] = counts.compactMap { (id, qty) in
+            guard let monster = monstersByID[id] else { return nil }
+            return MonsterSummary(monster: monster, quantity: qty, isNew: newIDs.contains(id))
+        }
+        
+        let sortedSummaries = monsterSummaries.sorted { $0.monster.name < $1.monster.name }
+        
+        /*let filteredMonsters = Factory.shared().monsters.filter { SwiftAppDefaults.shared.monstersFound.contains($0.id) }
         let monsterCounts = Dictionary(grouping: filteredMonsters, by: { $0.id })
-        let monsterSummaries = filteredMonsters.map { MonsterSummary.init(monster: $0, quantity: monsterCounts[$0.id]?.count ?? 0, isNew: SwiftAppDefaults.shared.newMonsters.contains($0.id))}
-        self.items = monsterSummaries
+        let monsterSummaries = filteredMonsters.map { MonsterSummary.init(monster: $0, quantity: monsterCounts[$0.id]?.count ?? 0, isNew: SwiftAppDefaults.shared.newMonsters.contains($0.id))}*/
+        
+        self.items = sortedSummaries
         viewController.view.addSubview(self)
         self.snp.makeConstraints { make in
             make.centerY.equalTo(viewController.view.snp.centerY)

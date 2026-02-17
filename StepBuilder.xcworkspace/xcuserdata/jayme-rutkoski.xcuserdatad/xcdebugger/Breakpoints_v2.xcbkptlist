@@ -238,8 +238,8 @@
             filePath = "StepBuilder/StepBuilder/Application/Helpers/HealthHelper.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "fetchStepCount(forDate:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +254,8 @@
             filePath = "StepBuilder/StepBuilder/Application/Helpers/HealthHelper.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "fetchDailyStepCounts(forLast:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -270,8 +270,8 @@
             filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
             landmarkName = "calculateSteps()"
             landmarkType = "7">
          </BreakpointContent>
@@ -430,8 +430,8 @@
             filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "423"
-            endingLineNumber = "423"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
             landmarkName = "updateSteps(steps:updateProgress:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -446,8 +446,8 @@
             filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "435"
-            endingLineNumber = "435"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "displayMonsterFound(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -462,8 +462,8 @@
             filePath = "StepBuilder/StepBuilder/Application/Views/MonsterSummary/MonsterSummaryView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
             landmarkName = "displayOnViewController(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -478,8 +478,8 @@
             filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "469"
-            endingLineNumber = "469"
+            startingLineNumber = "522"
+            endingLineNumber = "522"
             landmarkName = "tryDisplaySummary()"
             landmarkType = "7">
          </BreakpointContent>
@@ -494,8 +494,8 @@
             filePath = "StepBuilder/StepBuilder/Features/Home/HomeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "474"
-            endingLineNumber = "474"
+            startingLineNumber = "527"
+            endingLineNumber = "527"
             landmarkName = "tryDisplaySummary()"
             landmarkType = "7">
          </BreakpointContent>
@@ -504,60 +504,16 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "C495FC14-E21D-4046-8B74-228B8D00D632"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "308"
-            endingLineNumber = "308"
+            startingLineNumber = "342"
+            endingLineNumber = "342"
             landmarkName = "removeMonster(_:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "C495FC14-E21D-4046-8B74-228B8D00D632 - e521ea03eb05b8c0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static StepBuilder.SwiftAppDefaults.removeMonster(Swift.Int) -&gt; ()"
-                  moduleName = "StepBuilder.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jayme-rutkoski/Development/Sandhills/GitHub/step-builder/StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "308"
-                  endingLineNumber = "308">
-               </Location>
-               <Location
-                  uuid = "C495FC14-E21D-4046-8B74-228B8D00D632 - 9de257774c8858b1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Int) -&gt; Swift.Bool in static StepBuilder.SwiftAppDefaults.removeMonster(Swift.Int) -&gt; ()"
-                  moduleName = "StepBuilder.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jayme-rutkoski/Development/Sandhills/GitHub/step-builder/StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "308"
-                  endingLineNumber = "308">
-               </Location>
-               <Location
-                  uuid = "C495FC14-E21D-4046-8B74-228B8D00D632 - 5ef1da22d3ee34b1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 (Swift.Int) -&gt; Swift.Int in static StepBuilder.SwiftAppDefaults.removeMonster(Swift.Int) -&gt; ()"
-                  moduleName = "StepBuilder.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jayme-rutkoski/Development/Sandhills/GitHub/step-builder/StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "308"
-                  endingLineNumber = "308">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -570,9 +526,121 @@
             filePath = "StepBuilder/StepBuilder/Application/Utils/SwiftAppDefaults.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "280"
-            endingLineNumber = "280"
+            startingLineNumber = "314"
+            endingLineNumber = "314"
             landmarkName = "addMonster(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BB762BCB-7D15-4F2E-93D1-1620A039A840"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Helpers/MonsterHelper.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "16"
+            endingLineNumber = "16"
+            landmarkName = "getUncommonMonsters()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "70F3FC88-560B-4EC0-82FC-0C1CF54066E9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilderTests/MonsterTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "testRandomMonster()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6E6E0084-4BF7-4FE5-A6B9-451B31364C8F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilderTests/MonsterTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "testRandomMonster()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "15F4DCC0-FB7A-4721-BA4A-BC7B46C1B90D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Helpers/ItemHelper.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "consumeItem(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2C633728-58BB-457F-9C84-BCF424829DA8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Helpers/ItemHelper.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "consumeLuckyCharm(completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DC43CD79-F074-4564-AAB2-F8B1434BD6BB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Helpers/ItemHelper.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "consumeLuckyCharm(completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B4160BC1-90A2-4DB0-87FC-CB0C05082A85"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StepBuilder/StepBuilder/Application/Helpers/ItemHelper.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "consumeLuckyCharm(completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

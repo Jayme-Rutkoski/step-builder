@@ -6,7 +6,7 @@
 //
 import Foundation
 
-class MonsterHelper {
+public class MonsterHelper {
     static func getCommonMonsters() -> [Int] {
         return Factory.shared().monsters.filter { $0.rarity == 1 }.map { $0.id }
     }
@@ -22,33 +22,52 @@ class MonsterHelper {
     static func getLegendaryMonsters() -> [Int] {
         return Factory.shared().monsters.filter { $0.rarity == 4 }.map { $0.id }
     }
+    
+    static func getMonster() -> Int {
+        let randomValue = Int.random(in: 0..<100)
+        var monsterFound = 99999
+        var luckyChanceFind = 1
+        if SwiftAppDefaults.shared.hasLuckyCharmActive {
+            luckyChanceFind = 2
+            SwiftAppDefaults.shared.hasLuckyCharmActive = false
+        }
+        
+        
+        switch randomValue {
+        case 0..<(3*luckyChanceFind):
+            monsterFound = getLegendaryMonsters().randomElement() ?? monsterFound
+            break
+        case (3*luckyChanceFind)..<(13*luckyChanceFind):
+            monsterFound = getRareMonsters().randomElement() ?? monsterFound
+            break
+        case 13..<33:
+            monsterFound = getUncommonMonsters().randomElement() ?? monsterFound
+            break
+        case 33..<83:
+            monsterFound = getCommonMonsters().randomElement() ?? monsterFound
+            break
+        default:
+            monsterFound = 99999
+        }
+        
+        return monsterFound
+    }
 
     static func calculateNewFind() -> Int {
-        var randomValue = Int.random(in: 0...100)
-        if (randomValue <= 30) {
-            // 30% chance to find nothing
-            return 99999
-        } else {
-            randomValue = Int.random(in: 0...100)
-            var monsterFound = 99999
-            
-            if (randomValue <= 3) { // 3% chance to find a legendary monster
-                monsterFound = getLegendaryMonsters().randomElement() ?? monsterFound
-            } else if (randomValue > 3 && randomValue <= 13) { // 10% chance to find a rare monster
-                monsterFound = getRareMonsters().randomElement() ?? monsterFound
-            } else if (randomValue > 13 && randomValue <= 43) { // 30% chance to find an uncommon monster
-                monsterFound = getUncommonMonsters().randomElement() ?? monsterFound
-            } else { // 57% change to find a common monster
-                monsterFound = getCommonMonsters().randomElement() ?? monsterFound
+        var monsterFound = getMonster()
+        
+        if (SwiftAppDefaults.shared.hasMonsterBaitActive) {
+            while monsterFound == 99999 {
+                monsterFound = getMonster()
             }
             
-            if (monsterFound == 99999) {
-                return monsterFound
-            }
-                
-            SwiftAppDefaults.addMonster(monsterFound)
-            NotificationCenter.default.post(name: .MonsterFound, object: monsterFound)
-            return monsterFound
+            SwiftAppDefaults.shared.hasMonsterBaitActive = false
         }
+        
+        guard monsterFound != 99999 else { return monsterFound }
+            
+        SwiftAppDefaults.addMonster(monsterFound)
+        NotificationCenter.default.post(name: .MonsterFound, object: monsterFound)
+        return monsterFound
     }
 }

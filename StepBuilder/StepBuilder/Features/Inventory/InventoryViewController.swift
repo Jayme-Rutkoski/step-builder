@@ -15,6 +15,35 @@ class InventoryViewController: UIViewController {
     var myViewHeightConstraint: Constraint?
     private var columns: Int = 1
     private let desiredTile: CGFloat = 60
+
+    private var emptyStateBottomConstraint: Constraint?
+    private var collectionBottomConstraint: Constraint?
+
+    private lazy var emptyStateImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "bag"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .black
+        return imageView
+    }()
+
+    private lazy var emptyStateMessageLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = FontHelper.getBoldFont(size: 16)
+        label.text = "No items yet. Visit the shop to stock up."
+        label.textColor = .black
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+
+    private lazy var emptyStateView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [emptyStateImageView, emptyStateMessageLabel])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 12
+        stack.isHidden = true
+        return stack
+    }()
     
     private lazy var labelTitle: UILabel = {
         let label = UILabel(frame: .zero)
@@ -83,7 +112,7 @@ class InventoryViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         self.collectionView.layoutIfNeeded()
-        self.myViewHeightConstraint?.update(offset: self.collectionView.contentSize.height + 50)
+        self.updateContainerHeight()
     }
     
     required init?(coder: NSCoder) {
@@ -107,7 +136,7 @@ class InventoryViewController: UIViewController {
             make.centerY.equalTo(self.view.snp.centerY)
             make.left.equalTo(self.view.snp.left).offset(50)
             make.right.equalTo(self.view.snp.right).inset(50)
-            self.myViewHeightConstraint = make.height.equalTo(0).constraint
+            self.myViewHeightConstraint = make.height.equalTo(0).priority(.low).constraint
         }
         
         self.viewContainer.addSubview(self.buttonClose)
@@ -123,14 +152,29 @@ class InventoryViewController: UIViewController {
             make.top.equalTo(self.viewContainer.snp.top).offset(10)
             make.centerX.equalTo(self.viewContainer.snp.centerX)
         }
+
+        self.viewContainer.addSubview(self.emptyStateView)
+        self.emptyStateView.snp.makeConstraints { make in
+            make.top.equalTo(self.labelTitle.snp.bottom).offset(16)
+            make.left.equalTo(self.viewContainer.snp.left).offset(20)
+            make.right.equalTo(self.viewContainer.snp.right).inset(20)
+            self.emptyStateBottomConstraint = make.bottom.equalTo(self.viewContainer.snp.bottom).inset(16).constraint
+        }
+
+        self.emptyStateImageView.snp.makeConstraints { make in
+            make.height.equalTo(80)
+            make.width.equalTo(80)
+        }
         
         self.viewContainer.addSubview(self.collectionView)
         self.collectionView.snp.makeConstraints { make in
             make.top.equalTo(self.labelTitle.snp.bottom).offset(5)
             make.left.equalTo(self.viewContainer.snp.left).offset(10)
             make.right.equalTo(self.viewContainer.snp.right).offset(-10)
-            make.bottom.equalTo(self.viewContainer.snp.bottom).offset(-10)
+            self.collectionBottomConstraint = make.bottom.equalTo(self.viewContainer.snp.bottom).offset(-10).constraint
         }
+
+        self.emptyStateBottomConstraint?.deactivate()
         
         self.populateList()
     }
@@ -148,6 +192,7 @@ class InventoryViewController: UIViewController {
         
         self.items.sort { $0.itemNumber < $1.itemNumber }
         self.collectionView.reloadData()
+        self.updateEmptyState()
     }
     
     @objc private func buttonClose_TouchUpInside() {
@@ -164,8 +209,33 @@ class InventoryViewController: UIViewController {
                     item.quantity -= 1
                 }
                 self.collectionView.reloadData()
+                self.updateEmptyState()
             }
         }
+    }
+
+    private func updateEmptyState() {
+        let isEmpty = self.items.isEmpty
+        self.emptyStateView.isHidden = !isEmpty
+        self.collectionView.isHidden = isEmpty
+
+        if isEmpty {
+            self.collectionBottomConstraint?.deactivate()
+            self.emptyStateBottomConstraint?.activate()
+        } else {
+            self.emptyStateBottomConstraint?.deactivate()
+            self.collectionBottomConstraint?.activate()
+        }
+
+        self.viewContainer.setNeedsLayout()
+        self.viewContainer.layoutIfNeeded()
+        self.updateContainerHeight()
+    }
+
+    private func updateContainerHeight() {
+        let fittingSize = CGSize(width: self.viewContainer.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let height = self.viewContainer.systemLayoutSizeFitting(fittingSize).height
+        self.myViewHeightConstraint?.update(offset: height)
     }
 }
 

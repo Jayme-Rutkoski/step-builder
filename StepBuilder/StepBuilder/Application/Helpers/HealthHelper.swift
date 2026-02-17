@@ -56,7 +56,15 @@ class HealthHelper {
                     return
                 }
 
-                let steps = sum.doubleValue
+                var steps = sum.doubleValue
+                
+                let virtualSteps = SwiftAppDefaults.shared.virtualStepsHistory
+                for dateStep in virtualSteps.keys {
+                    if (dateStep.isSameDay(as: startDate)) {
+                        steps += Double(virtualSteps[dateStep] ?? 0)
+                    }
+                }
+                
                 // Store the steps for the correct day (reverse order for graph display: oldest to newest)
                 dailyStepCounts[numberOfDays - 1 - i] = CGFloat(steps)
             }

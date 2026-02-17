@@ -20,8 +20,8 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
     
     private var defaults: UserDefaults
     
-    public init() {
-        self.defaults = UserDefaults.standard
+    public init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
     }
     private struct Keys {
         public static let installDate = "AppDefaults.Keys.installDate"
@@ -37,6 +37,9 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let itemInventory = "AppDefaults.Keys.itemInventory"
         public static let lastDailyGiftDate = "AppDefaults.Keys.lastDailyGiftDate"
         public static let showMonsterFindSummary = "AppDefaults.Keys.showMonsterFindSummary"
+        public static let virtualStepsHistory = "AppDefaults.Keys.virtualStepsHistory"
+        public static let hasMonsterBaitActive = "AppDefaults.Keys.hasMonsterBaitActive"
+        public static let hasLuckyCharmActive = "AppDefaults.Keys.hasLuckyCharmActive"
         
         // Achievements
         public static let monsterFindCount = "AppDefaults.Keys.monsterFindCount"
@@ -273,6 +276,37 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         }
         set {
             defaults.set(newValue, forKey: Keys.hasPerfectMonth)
+        }
+    }
+    
+    public var virtualStepsHistory: [Date: Int] {
+        get {
+            guard let data = defaults.data(forKey: Keys.virtualStepsHistory),
+                  let decoded = try? JSONDecoder().decode([Date: Int].self, from: data) else { return [:] }
+            return decoded
+        }
+        set {
+            if let encoded = try? JSONEncoder().encode(newValue) {
+                defaults.set(encoded, forKey: Keys.virtualStepsHistory)
+            }
+        }
+    }
+    
+    public var hasMonsterBaitActive: Bool {
+        get {
+            return defaults.bool(forKey: Keys.hasMonsterBaitActive)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.hasMonsterBaitActive)
+        }
+    }
+    
+    public var hasLuckyCharmActive: Bool {
+        get {
+            return defaults.bool(forKey: Keys.hasLuckyCharmActive)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.hasLuckyCharmActive)
         }
     }
     

@@ -101,6 +101,19 @@ class HomeViewController: UIViewController {
         return label
     }()
     
+    private lazy var buttonActiveItems: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle("View Active Items", for: .normal)
+        button.titleLabel?.font = FontHelper.getBoldFont(size: 13)
+        button.setTitleColor(.white, for: .normal)
+        button.addTarget(self, action: #selector(buttonActiveItems_TouchUpInside), for: .touchUpInside)
+        button.backgroundColor = UIColor(hex: 0x800080)
+        //button.layer.cornerRadius = 10
+        button.isUserInteractionEnabled = true
+        
+        return button
+    }()
+    
     private lazy var leftImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.image = UIImage(named: "left_arrow")
@@ -149,6 +162,8 @@ class HomeViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(monsterFound), name: .MonsterFound, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(detectedForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updatingSteps), name: .UpdateSteps, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkActiveItems), name: .ItemConsumed, object: nil)
         
         self.view.backgroundColor = UIColor(hex: 0xe4d2ba)
         
@@ -160,6 +175,7 @@ class HomeViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped))
         
         self.setup()
+        self.updateActiveItemsButtonState()
         
         if (!Date.now.isSameDay(as: SwiftAppDefaults.shared.lastDailyGiftDate) && !Date.now.isSameDay(as: SwiftAppDefaults.shared.installDate)) {
             self.queueUpNextModal {
@@ -203,9 +219,16 @@ class HomeViewController: UIViewController {
     }
     
     func setup() {
+        self.view.addSubview(self.buttonActiveItems)
+        self.buttonActiveItems.snp.makeConstraints { make in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)//.inset(5)
+            make.left.equalTo(self.view.snp.left)//.inset(10)
+            make.right.equalTo(self.view.snp.right)//.inset(10)
+            make.height.equalTo(40)
+        }
         self.view.addSubview(self.progressView)
         self.progressView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(self.buttonActiveItems.snp.bottom)
             make.left.equalTo(self.view.snp.left)
             make.right.equalTo(self.view.snp.right)
             make.height.equalTo(7)
@@ -425,6 +448,8 @@ class HomeViewController: UIViewController {
             } else {
                 self.tryDisplaySummary()
             }
+            
+            self.updateActiveItemsButtonState()
         }
     }
     
@@ -456,6 +481,34 @@ class HomeViewController: UIViewController {
                 self.viewSKContainer.startFloating()
             }
         }
+    }
+    
+
+    @objc private func updatingSteps(notification: Notification) {
+        if let steps = notification.object as? Int {
+            self.updateSteps(steps: steps, updateProgress: true)
+        }
+    }
+    
+    @objc private func checkActiveItems(notification: Notification) {
+        self.updateActiveItemsButtonState()
+    }
+    
+    private func updateActiveItemsButtonState() {
+        self.buttonActiveItems.isHidden = !(SwiftAppDefaults.shared.hasMonsterBaitActive || SwiftAppDefaults.shared.hasLuckyCharmActive)
+        if self.buttonActiveItems.isHidden {
+            self.buttonActiveItems.snp.updateConstraints { make in
+                make.height.equalTo(0)
+            }
+        } else {
+            self.buttonActiveItems.snp.updateConstraints { make in
+                make.height.equalTo(40)
+            }
+        }
+    }
+    
+    @objc private func buttonActiveItems_TouchUpInside() {
+        ActiveItemsCoordinator.init(viewController: self).start()
     }
     
     private func tryDisplaySummary() {

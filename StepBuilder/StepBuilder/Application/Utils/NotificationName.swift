@@ -12,4 +12,5 @@ public extension Notification.Name {
     static let CurrencyUpdate: NSNotification.Name = Notification.Name("Notification.Name.CurrencyUpdate")
     static let MonsterFound: NSNotification.Name = Notification.Name("Notification.Name.MonsterFound")
     static let ItemConsumed: NSNotification.Name = Notification.Name("Notification.Name.ItemConsumed")
+    static let UpdateSteps: NSNotification.Name = Notification.Name("Notification.Name.UpdateSteps")
 }

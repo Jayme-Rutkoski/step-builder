@@ -16,7 +16,18 @@
 		26CDD31A2E1C8C530046CDDD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 26CDD3192E1C8C530046CDDD /* SnapKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		263ECAC42E58D9E700A75E9A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 26CDD2A72E1C69E10046CDDD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 26CDD2AE2E1C69E10046CDDD;
+			remoteInfo = StepBuilder;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		263ECAC02E58D9E700A75E9A /* StepBuilderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StepBuilderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		26CDD2AF2E1C69E10046CDDD /* StepBuilder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StepBuilder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -41,6 +52,11 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		263ECAC12E58D9E700A75E9A /* StepBuilderTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = StepBuilderTests;
+			sourceTree = "<group>";
+		};
 		26CDD2B12E1C69E10046CDDD /* StepBuilder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -53,6 +69,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		263ECABD2E58D9E700A75E9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		26CDD2AC2E1C69E10046CDDD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -81,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				26CDD2B12E1C69E10046CDDD /* StepBuilder */,
+				263ECAC12E58D9E700A75E9A /* StepBuilderTests */,
 				2696994F2E319687008ADF1F /* Frameworks */,
 				26CDD2B02E1C69E10046CDDD /* Products */,
 			);
@@ -90,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				26CDD2AF2E1C69E10046CDDD /* StepBuilder.app */,
+				263ECAC02E58D9E700A75E9A /* StepBuilderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,6 +122,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		263ECABF2E58D9E700A75E9A /* StepBuilderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 263ECAC62E58D9E800A75E9A /* Build configuration list for PBXNativeTarget "StepBuilderTests" */;
+			buildPhases = (
+				263ECABC2E58D9E700A75E9A /* Sources */,
+				263ECABD2E58D9E700A75E9A /* Frameworks */,
+				263ECABE2E58D9E700A75E9A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				263ECAC52E58D9E700A75E9A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				263ECAC12E58D9E700A75E9A /* StepBuilderTests */,
+			);
+			name = StepBuilderTests;
+			packageProductDependencies = (
+			);
+			productName = StepBuilderTests;
+			productReference = 263ECAC02E58D9E700A75E9A /* StepBuilderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		26CDD2AE2E1C69E10046CDDD /* StepBuilder */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 26CDD2C22E1C69E30046CDDD /* Build configuration list for PBXNativeTarget "StepBuilder" */;
@@ -133,9 +181,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
+					263ECABF2E58D9E700A75E9A = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 26CDD2AE2E1C69E10046CDDD;
+					};
 					26CDD2AE2E1C69E10046CDDD = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -161,11 +213,19 @@
 			projectRoot = "";
 			targets = (
 				26CDD2AE2E1C69E10046CDDD /* StepBuilder */,
+				263ECABF2E58D9E700A75E9A /* StepBuilderTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		263ECABE2E58D9E700A75E9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		26CDD2AD2E1C69E10046CDDD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -176,6 +236,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		263ECABC2E58D9E700A75E9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		26CDD2AB2E1C69E10046CDDD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -185,7 +252,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		263ECAC52E58D9E700A75E9A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 26CDD2AE2E1C69E10046CDDD /* StepBuilder */;
+			targetProxy = 263ECAC42E58D9E700A75E9A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		263ECAC72E58D9E800A75E9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BT4J67MR3F;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaymerutkoski.StepBuilderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StepBuilder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StepBuilder";
+			};
+			name = Debug;
+		};
+		263ECAC82E58D9E800A75E9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8DGNFF8D7D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaymerutkoski.StepBuilderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StepBuilder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StepBuilder";
+			};
+			name = Release;
+		};
 		26CDD2C32E1C69E30046CDDD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -372,6 +491,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		263ECAC62E58D9E800A75E9A /* Build configuration list for PBXNativeTarget "StepBuilderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				263ECAC72E58D9E800A75E9A /* Debug */,
+				263ECAC82E58D9E800A75E9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		26CDD2AA2E1C69E10046CDDD /* Build configuration list for PBXProject "StepBuilder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
