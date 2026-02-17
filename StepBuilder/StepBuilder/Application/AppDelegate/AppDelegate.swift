@@ -57,6 +57,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         MainCoordinator().start()
         
+        SwiftAppDefaults.shared.coins = 100
+        
         if let statusBarFrame = window?.windowScene?.statusBarManager?.statusBarFrame {
             let statusBar = UIView(frame: CGRect(x: 0, y: 0, width: statusBarFrame.width, height: window?.safeAreaInsets.top ?? statusBarFrame.height))
             statusBar.backgroundColor = UIColor(hex: 0xa64ca6)

@@ -12,7 +12,7 @@ import SnapKit
 class InventoryViewController: UIViewController {
     
     private var items: [InventoryItem] = []
-    var myViewHeightConstraint: Constraint?
+    private var collectionViewHeightConstraint: Constraint?
     private var columns: Int = 1
     private let desiredTile: CGFloat = 60
 
@@ -110,9 +110,9 @@ class InventoryViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+
         self.collectionView.layoutIfNeeded()
-        self.updateContainerHeight()
+        self.updateCollectionViewHeight()
     }
     
     required init?(coder: NSCoder) {
@@ -136,9 +136,8 @@ class InventoryViewController: UIViewController {
             make.centerY.equalTo(self.view.snp.centerY)
             make.left.equalTo(self.view.snp.left).offset(50)
             make.right.equalTo(self.view.snp.right).inset(50)
-            self.myViewHeightConstraint = make.height.equalTo(0).priority(.low).constraint
         }
-        
+
         self.viewContainer.addSubview(self.buttonClose)
         self.buttonClose.snp.makeConstraints { make in
             make.top.equalTo(self.viewContainer.snp.top).offset(10)
@@ -172,6 +171,7 @@ class InventoryViewController: UIViewController {
             make.left.equalTo(self.viewContainer.snp.left).offset(10)
             make.right.equalTo(self.viewContainer.snp.right).offset(-10)
             self.collectionBottomConstraint = make.bottom.equalTo(self.viewContainer.snp.bottom).offset(-10).constraint
+            self.collectionViewHeightConstraint = make.height.equalTo(0).constraint
         }
 
         self.emptyStateBottomConstraint?.deactivate()
@@ -208,7 +208,6 @@ class InventoryViewController: UIViewController {
                 } else {
                     item.quantity -= 1
                 }
-                self.collectionView.reloadData()
                 self.updateEmptyState()
             }
         }
@@ -222,20 +221,21 @@ class InventoryViewController: UIViewController {
         if isEmpty {
             self.collectionBottomConstraint?.deactivate()
             self.emptyStateBottomConstraint?.activate()
+            self.collectionViewHeightConstraint?.update(offset: 0)
         } else {
             self.emptyStateBottomConstraint?.deactivate()
             self.collectionBottomConstraint?.activate()
+            self.collectionView.layoutIfNeeded()
+            self.updateCollectionViewHeight()
         }
-
+        self.collectionView.reloadData()
         self.viewContainer.setNeedsLayout()
         self.viewContainer.layoutIfNeeded()
-        self.updateContainerHeight()
     }
 
-    private func updateContainerHeight() {
-        let fittingSize = CGSize(width: self.viewContainer.bounds.width, height: UIView.layoutFittingCompressedSize.height)
-        let height = self.viewContainer.systemLayoutSizeFitting(fittingSize).height
-        self.myViewHeightConstraint?.update(offset: height)
+    private func updateCollectionViewHeight() {
+        let height = self.collectionView.collectionViewLayout.collectionViewContentSize.height
+        self.collectionViewHeightConstraint?.update(offset: height)
     }
 }
 
@@ -244,7 +244,8 @@ extension InventoryViewController: UICollectionViewDataSource {
         return 1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        items.count
+        print(items.count)
+        return items.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
