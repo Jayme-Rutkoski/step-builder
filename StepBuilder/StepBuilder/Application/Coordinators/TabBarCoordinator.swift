@@ -47,10 +47,15 @@ final public class TabBarCoordinator {
         
         tabBarController.tabBar.tintColor = .white
         tabBarController.tabBar.unselectedItemTintColor = .white
-        tabBarController.tabBar.isTranslucent = false
         
         let normalColor: UIColor = .white
-        let selectedColor: UIColor = .white
+        var selectedColor: UIColor = .white
+        if #available(iOS 26.0, *) {
+            selectedColor = UIColor(hex: 0xa64ca6)
+        } else  {
+            tabBarController.tabBar.isTranslucent = false
+        }
+        
         let normalTextAttributes: [NSAttributedString.Key : Any] = [.font: FontHelper.getFont(size: 12), NSAttributedString.Key.foregroundColor: normalColor]
         let selectedTextAttributes: [NSAttributedString.Key : Any] = [.font: FontHelper.getFont(size: 12), NSAttributedString.Key.foregroundColor: selectedColor]
         let tabBarAppearance: UITabBarAppearance = UITabBarAppearance()

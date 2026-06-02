@@ -26,7 +26,7 @@ final class MonsterTests: XCTestCase {
         let allMonsters = Factory.shared().monsters
         let filteredMonsters = allMonsters.filter({ result.contains($0.id) })
         for monster in filteredMonsters {
-            XCTAssertTrue(monster.rarity == 1)
+            XCTAssertTrue(monster.rarity == .common)
         }
     }
     
@@ -35,7 +35,7 @@ final class MonsterTests: XCTestCase {
         let allMonsters = Factory.shared().monsters
         let filteredMonsters = allMonsters.filter({ result.contains($0.id) })
         for monster in filteredMonsters {
-            XCTAssertTrue(monster.rarity == 2)
+            XCTAssertTrue(monster.rarity == .uncommon)
         }
     }
     
@@ -44,7 +44,7 @@ final class MonsterTests: XCTestCase {
         let allMonsters = Factory.shared().monsters
         let filteredMonsters = allMonsters.filter({ result.contains($0.id) })
         for monster in filteredMonsters {
-            XCTAssertTrue(monster.rarity == 3)
+            XCTAssertTrue(monster.rarity == .rare)
         }
     }
     
@@ -53,7 +53,7 @@ final class MonsterTests: XCTestCase {
         let allMonsters = Factory.shared().monsters
         let filteredMonsters = allMonsters.filter({ result.contains($0.id) })
         for monster in filteredMonsters {
-            XCTAssertTrue(monster.rarity == 4)
+            XCTAssertTrue(monster.rarity == .legendary)
         }
     }
 

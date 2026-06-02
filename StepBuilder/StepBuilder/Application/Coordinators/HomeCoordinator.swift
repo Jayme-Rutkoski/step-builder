@@ -27,6 +27,10 @@ class HomeCoordinator {
         let vc = HomeViewController()
         vc.setScene()
         vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: CurrencyView(frame: .zero))
+        if #available(iOS 26.0, *) {
+            vc.navigationItem.rightBarButtonItem?.hidesSharedBackground = true
+        }
+            
         
         return vc
     }

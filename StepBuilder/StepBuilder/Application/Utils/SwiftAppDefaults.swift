@@ -39,6 +39,7 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         public static let showMonsterFindSummary = "AppDefaults.Keys.showMonsterFindSummary"
         public static let virtualStepsHistory = "AppDefaults.Keys.virtualStepsHistory"
         public static let hasMonsterBaitActive = "AppDefaults.Keys.hasMonsterBaitActive"
+        public static let hasStepAmplifierActive = "AppDefaults.Keys.hasStepAmplifierActive"
         public static let hasLuckyCharmActive = "AppDefaults.Keys.hasLuckyCharmActive"
         
         // Achievements
@@ -298,6 +299,15 @@ public class SwiftAppDefaults: SwiftAppDefaultsProtocol {
         }
         set {
             defaults.set(newValue, forKey: Keys.hasMonsterBaitActive)
+        }
+    }
+    
+    public var hasStepAmplifierActive: Bool {
+        get {
+            return defaults.bool(forKey: Keys.hasStepAmplifierActive)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.hasStepAmplifierActive)
         }
     }
     

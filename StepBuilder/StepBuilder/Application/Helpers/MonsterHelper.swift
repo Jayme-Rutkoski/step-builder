@@ -8,19 +8,19 @@ import Foundation
 
 public class MonsterHelper {
     static func getCommonMonsters() -> [Int] {
-        return Factory.shared().monsters.filter { $0.rarity == 1 }.map { $0.id }
+        return Factory.shared().monsters.filter { $0.rarity == .common }.map { $0.id }
     }
     
     static func getUncommonMonsters() -> [Int] {
-        return Factory.shared().monsters.filter { $0.rarity == 2 }.map { $0.id }
+        return Factory.shared().monsters.filter { $0.rarity == .uncommon }.map { $0.id }
     }
     
     static func getRareMonsters() -> [Int] {
-        return Factory.shared().monsters.filter { $0.rarity == 3 }.map { $0.id }
+        return Factory.shared().monsters.filter { $0.rarity == .rare }.map { $0.id }
     }
     
     static func getLegendaryMonsters() -> [Int] {
-        return Factory.shared().monsters.filter { $0.rarity == 4 }.map { $0.id }
+        return Factory.shared().monsters.filter { $0.rarity == .legendary }.map { $0.id }
     }
     
     static func getMonster() -> Int {
@@ -69,5 +69,18 @@ public class MonsterHelper {
         SwiftAppDefaults.addMonster(monsterFound)
         NotificationCenter.default.post(name: .MonsterFound, object: monsterFound)
         return monsterFound
+    }
+    
+    static func getUniqueMonsters(_ monsterIds: [Int]) -> [Monster] {
+        return Factory.shared().monsters.filter { monsterIds.contains($0.id) }
+    }
+    static func getMonsterByID(_ id: Int) -> Monster? {
+        return Factory.shared().monsters.first { $0.id == id }
+    }
+    static func getAllMonsterInventoryIDsByID(_ id: Int) -> [Int] {
+        return SwiftAppDefaults.shared.monsterInventory.filter { $0 == id }
+    }
+    static func removeMonsterInventoryIDsByIDAndAmount(_ id: Int, amount: Int) {
+        SwiftAppDefaults.shared.monsterInventory.remove(amount: amount, where: { $0 == id })
     }
 }

@@ -66,6 +66,14 @@ class HomeViewController: UIViewController {
         return label
     }()
     
+    private lazy var buttonWarning: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setImage(UIImage(named: "warning"), for: .normal)
+        button.addTarget(self, action: #selector(buttonWarning_TouchUpInside), for: .touchUpInside)
+        
+        return button
+    }()
+    
     private lazy var viewSKContainer: FloatingView = {
         let view = FloatingView(frame: .zero)
         view.backgroundColor = .clear
@@ -153,7 +161,7 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        
+        self.updateMotionPermissionVisibility()
     }
     
     override func viewDidLoad() {
@@ -172,7 +180,12 @@ class HomeViewController: UIViewController {
             UIDevice.current.setValue(value, forKey: "orientation")
         }
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped))
+        let leftBarButtonItems = [
+            UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped)),
+            UIBarButtonItem(image: UIImage(named: "monster_pc")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(storageTapped))
+        ]
+        self.navigationItem.leftBarButtonItems = leftBarButtonItems
+        
         
         self.setup()
         self.updateActiveItemsButtonState()
@@ -192,10 +205,16 @@ class HomeViewController: UIViewController {
                 self.displayMonsterFound(monsterNumber)
             }
         }
+        
+        self.updateMotionPermissionVisibility()
     }
     
     @objc private func inventoryTapped() {
         InventoryCoordinator.init(viewController: self).start()
+    }
+    
+    @objc private func storageTapped() {
+        MonsterStorageCoordinator.init(viewController: self).start()
     }
     
     override func viewDidLayoutSubviews() {
@@ -288,8 +307,25 @@ class HomeViewController: UIViewController {
         
         self.viewNoData.isHidden = true
         
+        self.view.addSubview(self.buttonWarning)
+        self.buttonWarning.snp.makeConstraints { make in
+            make.top.equalTo(self.labelProgressToGo.snp.bottom).offset(10)
+            make.right.equalTo(self.view.snp.right).offset(-10)
+            make.width.equalTo(80)
+            make.height.equalTo(80)
+        }
+        
         //self.authorizeHealthKit()
         self.calculateSteps()
+    }
+    
+    private func updateMotionPermissionVisibility() {
+        let authStatus = CMPedometer.authorizationStatus()
+        if authStatus == .denied || authStatus == .notDetermined {
+            self.buttonWarning.isHidden = false
+        } else {
+            self.buttonWarning.isHidden = true
+        }
     }
     
     private func authorizeHealthKit() {
@@ -481,6 +517,8 @@ class HomeViewController: UIViewController {
                 self.viewSKContainer.startFloating()
             }
         }
+        
+        self.updateMotionPermissionVisibility()
     }
     
 
@@ -509,6 +547,33 @@ class HomeViewController: UIViewController {
     
     @objc private func buttonActiveItems_TouchUpInside() {
         ActiveItemsCoordinator.init(viewController: self).start()
+    }
+    
+    @objc private func buttonWarning_TouchUpInside() {
+        let alert = UIAlertController(
+            title: "Motion Access Needed",
+            message: "This app requires access to Motion & Fitness activity to work properly. Please enable it in Settings.",
+            preferredStyle: .alert
+        )
+
+        // Cancel action
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        // Settings action
+        let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
+            guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+
+            if UIApplication.shared.canOpenURL(settingsURL) {
+                UIApplication.shared.open(settingsURL)
+            }
+        }
+
+        alert.addAction(cancelAction)
+        alert.addAction(settingsAction)
+
+        self.present(alert, animated: true)
     }
     
     private func tryDisplaySummary() {

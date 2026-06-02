@@ -30,7 +30,11 @@ class ShopViewController: UIViewController {
         
         self.view.backgroundColor = UIColor(hex: 0xe4d2ba)
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped))
+        let leftBarButtonItems = [
+            UIBarButtonItem(image: UIImage(named: "bag")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(inventoryTapped)),
+            UIBarButtonItem(image: UIImage(named: "monster_pc")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(storageTapped))
+        ]
+        self.navigationItem.leftBarButtonItems = leftBarButtonItems
         
         self.setup()
     }
@@ -63,6 +67,10 @@ class ShopViewController: UIViewController {
     
     @objc private func inventoryTapped() {
         InventoryCoordinator.init(viewController: self).start()
+    }
+    
+    @objc private func storageTapped() {
+        MonsterStorageCoordinator.init(viewController: self).start()
     }
 }
 

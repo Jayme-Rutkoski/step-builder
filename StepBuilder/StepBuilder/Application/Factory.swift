@@ -29,6 +29,13 @@ class Factory {
             return _shopItems!
         }
     }
+    // TODO: COME BACK TO LATER TO ADD TO SHOPITEMS.JSON
+   /* {
+        "itemNumber": 10002,
+        "name": "Step Amplifier",
+        "price": 50,
+        "desc": "A high-tech booster that multiplies your momentum! Every real-world step you take counts double for the next 15 minutes. Activate it before a walk to supercharge your progress and cover more ground faster than ever."
+    },*/
     
     private var _monsters: [Monster]? = nil
     public var monsters: [Monster] {

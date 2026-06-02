@@ -2,25 +2,19 @@
     {
         "itemNumber": 10000,
         "name": "Energy Drink",
-        "price": 5,
+        "price": 20,
         "desc": "A quick burst of motivation in a bottle! Instantly adds +500 steps to your daily total, helping you reach your next discovery faster. Use it when you’re just short of finding your next monster."
     },
     {
         "itemNumber": 10001,
         "name": "Monster Bait",
-        "price": 30,
-        "desc": "Smells weird. Works wonders. Toss this out and watch a monster come running — your next search is guaranteed to find something wild!"
-    },
-    {
-        "itemNumber": 10002,
-        "name": "Step Amplifier",
         "price": 50,
-        "desc": "A high-tech booster that multiplies your momentum! Every real-world step you take counts double for the next 15 minutes. Activate it before a walk to supercharge your progress and cover more ground faster than ever."
+        "desc": "Smells weird. Works wonders. Toss this out and watch a monster come running — your next search is guaranteed to find something wild!"
     },
     {
         "itemNumber": 10003,
         "name": "Lucky Charm",
-        "price": 100,
+        "price": 125,
         "desc": "Infused with faint monster magic, this charm hums with fortune. For your next search, your chances of encountering rare and legendary monsters are doubled. Sometimes a little luck goes a long way."
     }
 ]

@@ -132,7 +132,7 @@ class MonsterDexCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(with id: Int, name: String, rarity: Int, hasSeen: Bool, indexNum: Int) {
+    func configure(with id: Int, name: String, rarity: Rarity, hasSeen: Bool, indexNum: Int) {
         self.labelName.text = name
         self.imageView.image = UIImage(named: "\(id)")
         self.imageViewFound.isHidden = !hasSeen

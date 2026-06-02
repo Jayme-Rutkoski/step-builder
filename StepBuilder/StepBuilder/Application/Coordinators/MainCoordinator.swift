@@ -50,15 +50,15 @@ class MainCoordinator {
     }
         
     func navigateToOnboarding() {
-        let vc = OnboardingViewController {
-            Task.init {
-                SwiftAppDefaults.shared.shownOnboarding = true
-    
-                self.navigateIntoApp()
-            }
-        }
-        
         DispatchQueue.main.async {
+            let vc = OnboardingViewController {
+                Task.init {
+                    SwiftAppDefaults.shared.shownOnboarding = true
+        
+                    self.navigateIntoApp()
+                }
+            }
+            
             RootViewController.shared.update(to: UINavigationController(rootViewController: vc))
         }
     }

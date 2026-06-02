@@ -25,6 +25,9 @@ class ShopCoordinator {
     public func getViewController() -> UIViewController {
         let vc = ShopViewController()
         vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: CurrencyView(frame: .zero))
+        if #available(iOS 26.0, *) {
+            vc.navigationItem.rightBarButtonItem?.hidesSharedBackground = true
+        }
         
         return vc
     }

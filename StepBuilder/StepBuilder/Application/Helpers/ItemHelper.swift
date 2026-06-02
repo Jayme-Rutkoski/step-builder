@@ -63,12 +63,17 @@ class ItemHelper {
     }
     
     static func consumeStepAmplifier(completion: @escaping () -> Void = {}) {
-        completion()
+        if (SwiftAppDefaults.shared.hasStepAmplifierActive) {
+            showMessage(title: "Cannot Use Step Amplifier", message: "You already have an active Step Amplifier. Please use the current one before using another.")
+        } else {
+            SwiftAppDefaults.shared.hasStepAmplifierActive = true
+            completion()
+        }
     }
     
     static func consumeLuckyCharm(completion: @escaping () -> Void = {}) {
         if (SwiftAppDefaults.shared.hasLuckyCharmActive) {
-            showMessage(title: "Cannot Use Monster Bait", message: "You already have an active Lucky Charm. Please use the current one before using another.")
+            showMessage(title: "Cannot Use Lucky Charm", message: "You already have an active Lucky Charm. Please use the current one before using another.")
         } else {
             SwiftAppDefaults.shared.hasLuckyCharmActive = true
             completion()
